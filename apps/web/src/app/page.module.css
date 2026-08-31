@@ -1,0 +1,320 @@
+/* Home Page Styles */
+
+.heroSection {
+  background: linear-gradient(135deg, #FF8C42 0%, #4A90E2 100%);
+  color: white;
+  padding: 6rem 1.5rem;
+}
+
+.heroContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.heroTitle .highlight {
+  color: #F7DC6F;
+  display: inline;
+}
+
+.heroDescription {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  color: #fff;
+  opacity: 0.9;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 640px) {
+  .buttonContainer {
+    flex-direction: row;
+  }
+}
+
+/* Override button styles for hero section */
+.heroContent :global(.button.outline) {
+  background: transparent;
+  color: var(--neutral-white);
+  border: 2px solid var(--neutral-white);
+}
+
+.heroContent :global(.button.outline:hover:not(:disabled)) {
+  background: var(--neutral-white);
+  color: var(--primary-orange);
+}
+
+.heroContent :global(.button.success) {
+  box-shadow: 0 12px 24px rgba(46, 204, 113, 0.3);
+}
+
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #F7DC6F;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* Pets Section */
+.petsSection {
+  background: white;
+  padding: 5rem 1.5rem;
+}
+
+.petsSectionContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.sectionTitle .highlight {
+  color: #FF8C42;
+}
+
+.sectionDescription {
+  font-size: 1rem;
+  color: #7F8C8D;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.petsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+  .petsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.petCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.petCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.petImageContainer {
+  width: 100%;
+  height: 240px;
+  background: linear-gradient(135deg, #ECF0F1 0%, #BDC3C7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.petImageContainer:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 140, 66, 0.1);
+}
+
+.petContent {
+  padding: 1.5rem;
+}
+
+.petName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 0.5rem;
+}
+
+.petInfo {
+  font-size: 0.875rem;
+  color: #7F8C8D;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.petDescription {
+  font-size: 0.875rem;
+  color: #7F8C8D;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.petFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.petGender {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.petGender.male {
+  background: rgba(74, 144, 226, 0.1);
+  color: #4A90E2;
+}
+
+.petGender.female {
+  background: rgba(255, 107, 107, 0.1);
+  color: #FF6B6B;
+}
+
+.ctaSection {
+  background: #2ECC71;
+  color: white;
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+.ctaContainer {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ctaTitle {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.ctaDescription {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+/* Override button styles for CTA section */
+.ctaContainer :global(.button.outline) {
+  background: transparent;
+  color: var(--neutral-white);
+  border: 2px solid var(--neutral-white);
+}
+
+.ctaContainer :global(.button.outline:hover:not(:disabled)) {
+  background: var(--neutral-white);
+  color: var(--primary-green);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 4rem 1rem;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroDescription {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .statsContainer {
+    gap: 1rem;
+  }
+
+  .statNumber {
+    font-size: 2rem;
+  }
+
+  .petsSection {
+    padding: 4rem 1rem;
+  }
+
+  .sectionHeader {
+    margin-bottom: 3rem;
+  }
+
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .ctaSection {
+    padding: 4rem 1rem;
+  }
+
+  .ctaTitle {
+    font-size: 2rem;
+  }
+}

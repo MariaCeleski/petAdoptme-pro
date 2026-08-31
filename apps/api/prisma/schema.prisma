@@ -1,0 +1,314 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../docs/erd.svg"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ========================================
+// USER MODELS
+// ========================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  avatar        String?
+  password      String?   // Nullable for OAuth users
+  phone         String?   // User phone number (optional)
+  location      String?   // User location/city (optional)
+  type          UserType  @default(ADOPTER)
+  emailVerified DateTime?
+  resetToken    String?   // Token for password reset
+  resetTokenExpiry DateTime? // Expiry for reset token
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relacionamentos
+  pets          Pet[]
+  adoptions     Adoption[]
+  shelter       Shelter?
+  accounts      Account[] // Para NextAuth
+  sessions      Session[] // Para NextAuth
+  emailPreference EmailPreference?
+  searchPreference AdopterSearchPreference?
+  
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("sessions")
+}
+
+// ========================================
+// PET MODELS
+// ========================================
+
+model Pet {
+  id            String      @id @default(cuid())
+  name          String
+  species       Species
+  breed         String
+  age           String
+  size          Size
+  gender        Gender
+  color         String?       // Cor do pet (opcional)
+  description   String
+  isNeutered    Boolean     @default(false)
+  isVaccinated  Boolean     @default(false)
+  healthStatus  String?
+  personality   String      // JSON string for array storage in SQLite
+  images        String      // JSON string for array storage in SQLite
+  status        PetStatus   @default(PENDING)
+  location      String?     // Cidade/Estado
+  
+  // New pet fields - Temperament & Behavior
+  temperament   String?           // "dócil", "brincalhão", "tímido", "agressivo", "calmo"
+  compatibilityChildren String?   // "sim", "nao", "supervisionada"
+  compatibilityAnimals String?    // "sim", "nao", "depende"
+  microchip     Boolean     @default(false)
+  allergies     String?           // Alergias do pet
+  adoptionReason String?          // "mudanca", "incompatibilidade", "outras", "resgate"
+  adoptionReasonDetails String?   // Detalhes do motivo da adoção
+  acceptOutsideCity String?       // "sim", "nao"
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Relacionamentos
+  ownerId       String?
+  owner         User?       @relation(fields: [ownerId], references: [id])
+  shelter       Shelter?    @relation(fields: [shelterId], references: [id])
+  shelterId     String?
+  adoptions     Adoption[]
+  
+  @@index([species, status])
+  @@index([size, status])
+  @@index([ownerId])
+  @@map("pets")
+}
+
+// ========================================
+// ADOPTION MODELS
+// ========================================
+
+model Adoption {
+  id            String          @id @default(cuid())
+  status        AdoptionStatus  @default(PENDING)
+  message       String?
+  adopterInfo   String         // JSON string for complex data in SQLite
+  rejectionReason String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  approvedAt    DateTime?
+  completedAt   DateTime?
+  
+  // Relacionamentos
+  petId         String
+  pet           Pet             @relation(fields: [petId], references: [id])
+  adopterId     String
+  adopter       User            @relation(fields: [adopterId], references: [id])
+  
+  @@index([status])
+  @@index([adopterId])
+  @@index([petId])
+  @@map("adoptions")
+}
+
+// ========================================
+// SHELTER MODELS
+// ========================================
+
+model Shelter {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  city        String
+  state       String
+  zipCode     String
+  phone       String
+  email       String
+  website     String?
+  description String?
+  logo        String?  // URL da logo
+  images      String   // JSON string for array storage in SQLite
+  isVerified  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relacionamentos
+  adminId     String   @unique
+  admin       User     @relation(fields: [adminId], references: [id])
+  pets        Pet[]
+  
+  @@map("shelters")
+}
+
+// ========================================
+// EMAIL PREFERENCE MODELS
+// ========================================
+
+model EmailPreference {
+  id                        String    @id @default(cuid())
+  userId                    String    @unique
+  adoptionNotifications     Boolean   @default(true)
+  statusChangeNotifications Boolean   @default(true)
+  petMatchingAlerts         Boolean   @default(true)
+  newsletter                Boolean   @default(true)
+  unsubscribedAll           Boolean   @default(false)
+  unsubscribeToken          String    @unique
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+  
+  // Relacionamentos
+  user                      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([unsubscribeToken])
+  @@map("email_preferences")
+}
+
+// ========================================
+// ADOPTER SEARCH PREFERENCE MODELS
+// ========================================
+
+model AdopterSearchPreference {
+  id                  String      @id @default(cuid())
+  userId              String      @unique
+  species             Species?    // Preferred species (DOG, CAT, or null for both)
+  sizePreferences     String      // JSON array of sizes (SMALL, MEDIUM, LARGE)
+  minAge              String?     // Min age preference
+  maxAge              String?     // Max age preference
+  genderPreference    Gender?     // MALE, FEMALE, or null for both
+  personalityTraits   String?     // JSON array of personality traits
+  location            String?     // Preferred location/city
+  searchRadius        Int?        // Search radius in km
+  isActive            Boolean     @default(true)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  
+  // Relacionamentos
+  user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([isActive])
+  @@map("adopter_search_preferences")
+}
+
+// ========================================
+// NOTIFICATION LOG MODELS
+// ========================================
+
+model NotificationLog {
+  id                  String      @id @default(cuid())
+  userId              String
+  petId               String
+  notificationType    String      // 'adoption_request', 'status_change', 'pet_matching'
+  sentAt              DateTime    @default(now())
+  deliveryStatus      String      @default("sent")  // sent, failed, bounced
+  email               String      // Email address where notification was sent
+  
+  @@index([userId])
+  @@index([petId])
+  @@index([notificationType])
+  @@index([sentAt])
+  @@unique([userId, petId, notificationType])  // Prevent duplicate matching alerts for same pet
+  @@map("notification_logs")
+}
+
+// ========================================
+// SPONSOR MODELS
+// ========================================
+
+model Sponsor {
+  id            String    @id @default(cuid())
+  name          String    @unique
+  logo          String    // URL da logo no Cloudinary
+  website       String?   // Link externo (opcional)
+  description   String?   // Descrição do patrocinador
+  isActive      Boolean   @default(true)
+  order         Int       @default(0)  // Para ordenação no carousel
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([isActive])
+  @@index([order])
+  @@map("sponsors")
+}
+
+// ========================================
+// ENUMS
+// ========================================
+
+enum UserType {
+  ADOPTER
+  SHELTER_ADMIN
+  INDIVIDUAL_OWNER
+}
+
+enum Species {
+  DOG
+  CAT
+}
+
+enum Size {
+  SMALL    // Até 10kg
+  MEDIUM   // 10-25kg
+  LARGE    // Acima de 25kg
+  XLARGE   // Extra grande (acima de 30kg)
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum PetStatus {
+  PENDING      // Aguardando aprovação do admin
+  APPROVED     // Aprovado e visível no catálogo
+  ADOPTED      // Adotado (arquivado)
+  UNAVAILABLE  // Temporariamente indisponível
+}
+
+enum AdoptionStatus {
+  PENDING      // Aguardando aprovação
+  APPROVED     // Aprovado pelo owner
+  REJECTED     // Rejeitado pelo owner
+  COMPLETED    // Adoção finalizada
+  CANCELLED    // Cancelado pelo adotante
+}

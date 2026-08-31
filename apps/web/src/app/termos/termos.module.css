@@ -1,0 +1,486 @@
+/* Terms of Service Page Styles */
+
+/* Hero Section */
+.heroSection {
+  background: linear-gradient(135deg, #9B59B6 0%, #6C3483 100%);
+  color: white;
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+.heroContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.heroDescription {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-bottom: 0;
+  color: #fff;
+  opacity: 0.9;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Main Content */
+.mainContent {
+  background: white;
+  padding: 3rem 1.5rem;
+}
+
+.mainContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Content Grid (Sidebar + Content) */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 968px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+/* Sidebar / Table of Contents */
+.sidebar {
+  position: relative;
+}
+
+@media (min-width: 969px) {
+  .sidebar {
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+  }
+}
+
+.tableOfContents {
+  background: #F8F9FA;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 4px solid #9B59B6;
+}
+
+.tableOfContents h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tocList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tocItem {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.tocItem a {
+  color: #7F8C8D;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
+.tocItem a:hover {
+  color: #9B59B6;
+  background: rgba(155, 89, 182, 0.1);
+  padding-left: 1rem;
+}
+
+.tocItem.active a {
+  color: #9B59B6;
+  font-weight: 600;
+  background: rgba(155, 89, 182, 0.15);
+  padding-left: 1rem;
+}
+
+/* Terms Content */
+.termsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.termSection {
+  scroll-margin-top: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #9B59B6;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sectionNumber {
+  display: inline-block;
+  background: #9B59B6;
+  color: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.termSection > p {
+  font-size: 0.95rem;
+  color: #7F8C8D;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.subsectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Lists */
+.termsList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+}
+
+.termsItem {
+  font-size: 0.95rem;
+  color: #7F8C8D;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.termsItem::before {
+  content: '•';
+  color: #9B59B6;
+  font-weight: 700;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  margin-top: -2px;
+}
+
+/* Important Notice */
+.importantNotice {
+  background: #FEF3CD;
+  border-left: 4px solid #F39C12;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  color: #856404;
+}
+
+.importantNotice strong {
+  color: #B8860B;
+}
+
+.importantNotice p {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.importantNotice p:last-child {
+  margin-bottom: 0;
+}
+
+/* Highlight */
+.highlight {
+  background: rgba(155, 89, 182, 0.1);
+  color: #6C3483;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* CTA Section */
+.ctaSection {
+  background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+  color: white;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  border-radius: 12px;
+  margin-top: 3rem;
+}
+
+.ctaContainer {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.ctaTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.ctaDescription {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+.ctaButton {
+  background: white;
+  color: #2ECC71;
+  border: none;
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.ctaButton:hover {
+  background: #F8F9FA;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Mobile Toggle for TOC */
+.tocToggle {
+  display: none;
+  background: #9B59B6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 3rem 1rem;
+  }
+
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroDescription {
+    font-size: 1rem;
+  }
+
+  .mainContent {
+    padding: 2rem 1rem;
+  }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .tocToggle {
+    display: block;
+  }
+
+  .sidebar {
+    position: relative;
+  }
+
+  .sidebar.hidden {
+    display: none;
+  }
+
+  .sidebar.visible {
+    display: block;
+  }
+
+  .tableOfContents {
+    padding: 1rem;
+  }
+
+  .tableOfContents h3 {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .tocList {
+    gap: 0.5rem;
+  }
+
+  .tocItem a {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .tocItem a:hover,
+  .tocItem.active a {
+    padding-left: 0.75rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .sectionNumber {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.8rem;
+  }
+
+  .subsectionTitle {
+    font-size: 1rem;
+  }
+
+  .termSection > p {
+    font-size: 0.9rem;
+  }
+
+  .termsItem {
+    font-size: 0.9rem;
+  }
+
+  .importantNotice {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .ctaSection {
+    padding: 2.5rem 1rem;
+    margin-top: 2rem;
+  }
+
+  .ctaTitle {
+    font-size: 1.5rem;
+  }
+
+  .ctaDescription {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroSection {
+    padding: 2.5rem 1rem;
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .heroDescription {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .mainContent {
+    padding: 1.5rem 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .sectionNumber {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+  }
+
+  .subsectionTitle {
+    font-size: 0.95rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .termSection > p {
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .termsList {
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding-left: 0.75rem;
+  }
+
+  .termsItem {
+    font-size: 0.875rem;
+  }
+
+  .termsItem::before {
+    margin-top: -1px;
+  }
+
+  .importantNotice {
+    padding: 0.875rem;
+    margin: 0.75rem 0;
+    font-size: 0.875rem;
+  }
+
+  .ctaSection {
+    padding: 2rem 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .ctaTitle {
+    font-size: 1.25rem;
+  }
+
+  .ctaDescription {
+    font-size: 0.875rem;
+  }
+
+  .ctaButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}

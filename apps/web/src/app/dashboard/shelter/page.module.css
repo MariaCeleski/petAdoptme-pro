@@ -1,0 +1,645 @@
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.errorMessage {
+  background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+  color: #7F1D1D;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid #FCA5A5;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.1);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #E5E7EB;
+  margin-bottom: 0;
+  overflow-x: auto;
+  padding: 0 1.5rem;
+  background: white;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.tab {
+  padding: 1rem 1.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: #374151;
+  background: rgba(255, 140, 66, 0.05);
+}
+
+.tabActive {
+  color: #0284c7;
+  border-bottom-color: #0284c7;
+}
+
+.tabContent {
+  background: white;
+  border-radius: 0 0.75rem 0.75rem 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  border: 1px solid #E5E7EB;
+  border-top: none;
+}
+
+.tabPane {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sections */
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionTitle::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(180deg, #0284c7 0%, #06b6d4 100%);
+  border-radius: 2px;
+}
+
+/* Stats Section */
+.statsSection {
+  margin-bottom: 2.5rem;
+}
+
+/* Quick Links Section */
+.quickLinksSection {
+  margin-bottom: 2.5rem;
+}
+
+.quickLinks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.quickLink {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border: 2px solid #E5E7EB;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.quickLink:hover {
+  border-color: #0284c7;
+  box-shadow: 0 8px 16px rgba(2, 132, 199, 0.15);
+  transform: translateY(-4px);
+}
+
+.quickLinkIcon {
+  font-size: 2rem;
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.quickLinkContent {
+  flex: 1;
+}
+
+.quickLinkTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.quickLinkDesc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Recent Section */
+.recentSection {
+  margin-bottom: 2.5rem;
+}
+
+.petsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.petListItem {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.petListItem:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #0284c7;
+  transform: translateX(4px);
+}
+
+.petListImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.petListInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.petListName {
+  margin: 0 0 0.35rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.petListBreed {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.petListStatus {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.petListStatus[data-status="available"] {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.petListStatus[data-status="pending"] {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.petListStatus[data-status="adopted"] {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.petListStatus[data-status="unavailable"] {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+/* Adoptions List */
+.adoptionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.adoptionItem {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.adoptionItem:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #0284c7;
+  transform: translateX(4px);
+}
+
+.adoptionPetImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.adoptionImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adoptionImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.adoptionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.adoptionTitle {
+  margin: 0 0 0.35rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.adoptionDate {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.adoptionStatus {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.adoptionStatus[data-status="pending"] {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.adoptionStatus[data-status="approved"] {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.adoptionStatus[data-status="rejected"] {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.adoptionStatus[data-status="completed"] {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.emptyIcon {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  color: #D1D5DB;
+  opacity: 0.5;
+}
+
+.emptyText {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.emptyLink {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #0284c7;
+  color: white;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.emptyLink:hover {
+  background: #0369a1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);
+}
+
+/* Form Section */
+.formSection {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #E5E7EB;
+  margin-top: 2rem;
+}
+
+.formTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formTitle::before {
+  content: '';
+  width: 4px;
+  height: 28px;
+  background: linear-gradient(180deg, #0284c7 0%, #06b6d4 100%);
+  border-radius: 2px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .quickLinks {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .tabContent {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .tabs {
+    padding: 0 1rem;
+  }
+
+  .tab {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .tabContent {
+    padding: 1.25rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .quickLinks {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .quickLink {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.25rem;
+  }
+
+  .quickLinkIcon {
+    font-size: 1.75rem;
+    min-width: auto;
+  }
+
+  .petListItem,
+  .adoptionItem {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .petListImage,
+  .adoptionPetImage {
+    width: 100%;
+    height: 150px;
+  }
+
+  .formSection {
+    padding: 1.5rem;
+  }
+
+  .formTitle {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.75rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .tabs {
+    padding: 0 0.5rem;
+  }
+
+  .tab {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .tabContent {
+    padding: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1rem;
+  }
+
+  .quickLinks {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .quickLink {
+    padding: 1rem;
+  }
+
+  .quickLinkIcon {
+    font-size: 1.5rem;
+  }
+
+  .quickLinkTitle {
+    font-size: 0.9rem;
+  }
+
+  .quickLinkDesc {
+    font-size: 0.8rem;
+  }
+
+  .petListItem,
+  .adoptionItem {
+    padding: 0.75rem;
+  }
+
+  .petListImage,
+  .adoptionPetImage {
+    width: 60px;
+    height: 60px;
+  }
+
+  .petListName,
+  .adoptionTitle {
+    font-size: 0.9rem;
+  }
+
+  .formSection {
+    padding: 1rem;
+  }
+
+  .formTitle {
+    font-size: 1.1rem;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  }
+
+  .tabContent {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .tabs {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+
+  .tab {
+    color: #9CA3AF;
+  }
+
+  .tab:hover {
+    background: rgba(2, 132, 199, 0.1);
+  }
+
+  .tabActive {
+    color: #0284c7;
+  }
+
+  .sectionTitle {
+    color: #F9FAFB;
+  }
+
+  .quickLink,
+  .petListItem,
+  .adoptionItem,
+  .formSection {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .quickLink:hover,
+  .petListItem:hover,
+  .adoptionItem:hover {
+    border-color: #0284c7;
+  }
+
+  .quickLinkTitle,
+  .petListName,
+  .adoptionTitle,
+  .formTitle {
+    color: #F9FAFB;
+  }
+
+  .quickLinkDesc,
+  .petListBreed,
+  .adoptionDate {
+    color: #9CA3AF;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .tabPane,
+  .quickLink,
+  .petListItem,
+  .adoptionItem,
+  .emptyLink {
+    transition: none;
+  }
+}

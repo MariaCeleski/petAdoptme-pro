@@ -1,0 +1,277 @@
+.sponsorsSection {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  padding: 4rem 1.5rem;
+  margin: 2rem 0;
+}
+
+.sponsorsContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.highlight {
+  color: #FF8C42;
+}
+
+.sectionDescription {
+  font-size: 1rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.carouselWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.navButton {
+  background: #FF8C42;
+  color: white;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.navButton:hover {
+  background: #ff7a1f;
+  transform: scale(1.1);
+}
+
+.navButton:active {
+  transform: scale(0.95);
+}
+
+.carouselContainer {
+  overflow: hidden;
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sponsorsGrid {
+  display: flex;
+  gap: 3rem;
+  padding: 2rem;
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+.sponsorCard {
+  flex: 0 0 calc(25% - 0.75rem);
+  min-width: 0;
+  background: white;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.sponsorCard:hover {
+  border-color: #FF8C42;
+  box-shadow: 0 4px 16px rgba(255, 140, 66, 0.2);
+  transform: translateY(-4px);
+}
+
+.sponsorImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sponsorImage {
+  object-fit: contain;
+  filter: grayscale(0%);
+  transition: filter 0.3s ease;
+}
+
+.sponsorCard:hover .sponsorImage {
+  filter: grayscale(0%);
+}
+
+.sponsorDescription {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.dotsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot:hover {
+  background: #bbb;
+}
+
+.dot.active {
+  background: #FF8C42;
+  transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .sponsorsGrid {
+    gap: 2rem;
+  }
+
+  .sponsorCard {
+    flex: 0 0 calc(33.333% - 1.33rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .sponsorsSection {
+    padding: 2.5rem 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .sectionHeader {
+    margin-bottom: 2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.75rem;
+  }
+
+  .sponsorsGrid {
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .sponsorCard {
+    flex: 0 0 calc(50% - 0.75rem);
+    padding: 1rem;
+  }
+
+  .sponsorImageWrapper {
+    height: 60px;
+    margin-bottom: 0.75rem;
+  }
+
+  .sponsorDescription {
+    font-size: 0.75rem;
+  }
+
+  .navButton {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .carouselWrapper {
+    gap: 0.5rem;
+  }
+
+  .sponsorsGrid {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .sponsorCard {
+    flex: 0 0 calc(50% - 0.5rem);
+    padding: 0.75rem;
+  }
+
+  .sponsorImageWrapper {
+    height: 50px;
+    margin-bottom: 0.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .navButton {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .sponsorsSection {
+    background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+  }
+
+  .sectionTitle {
+    color: #f0f0f0;
+  }
+
+  .sectionDescription {
+    color: #aaa;
+  }
+
+  .carouselContainer {
+    background: #2a2a2a;
+  }
+
+  .sponsorCard {
+    background: #333;
+    border-color: #444;
+  }
+
+  .sponsorCard:hover {
+    border-color: #FF8C42;
+    box-shadow: 0 4px 16px rgba(255, 140, 66, 0.15);
+  }
+
+  .sponsorDescription {
+    color: #bbb;
+  }
+}

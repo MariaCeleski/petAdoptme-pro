@@ -1,0 +1,375 @@
+.adoptionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Alerts */
+.errorAlert,
+.successAlert {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid;
+  align-items: flex-start;
+}
+
+.errorAlert {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+  color: #7f1d1d;
+}
+
+.errorAlert .errorIcon {
+  color: #ef4444;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.successAlert {
+  background-color: #dcfce7;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.successAlert .successIcon {
+  color: #22c55e;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.alertContent h4 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.alertContent p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Form Sections */
+.formSection {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+}
+
+.formSection :global(.card-header) {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.sectionNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: #ff8c42;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.sectionBody {
+  padding: 1.5rem;
+}
+
+/* Form Grid */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.formGrid:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Checkbox Group */
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #4b5563;
+  user-select: none;
+}
+
+.checkboxLabel input[type="checkbox"],
+.checkboxLabel input[type="radio"] {
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+}
+
+.checkboxLabel:hover {
+  color: #1f2937;
+}
+
+/* Textarea */
+.textareaGroup {
+  margin-bottom: 1.5rem;
+}
+
+.textareaGroup:last-child {
+  margin-bottom: 0;
+}
+
+.textareaLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #ff8c42;
+  box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.1);
+}
+
+.textarea:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.fieldError {
+  display: block;
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 0.25rem;
+}
+
+/* Current Pets */
+.currentPetsList {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.subheading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1rem 0;
+}
+
+.petCard {
+  margin-bottom: 0.75rem;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.petCardBody {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+@media (max-width: 640px) {
+  .petCardBody {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.petInfo {
+  flex: 1;
+}
+
+.petDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .petDetails {
+    grid-template-columns: 1fr;
+  }
+}
+
+.petDetail {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.petDetail .label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.removeButton {
+  white-space: nowrap;
+}
+
+/* Add Pet Button */
+.addPetButton {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+/* Pet Input Card */
+.petInputCard {
+  border: 2px dashed #ff8c42;
+  background-color: #fffbf7;
+  margin-bottom: 1.5rem;
+}
+
+.petInputBody {
+  padding: 1.5rem;
+}
+
+.petInputBody :global(.input-group) {
+  margin-bottom: 1rem;
+}
+
+.petInputBody :global(.input-group):last-child {
+  margin-bottom: 0;
+}
+
+.petInputActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  .petInputActions {
+    justify-content: stretch;
+  }
+
+  .petInputActions :global(button) {
+    flex: 1;
+  }
+}
+
+/* Form Actions */
+.formActions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.submitButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+  min-height: 2.5rem;
+}
+
+.loadingIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .adoptionForm {
+    gap: 1.5rem;
+  }
+
+  .formSection :global(.card-header) {
+    padding: 1rem;
+  }
+
+  .sectionBody {
+    padding: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1rem;
+  }
+
+  .sectionNumber {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.75rem;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+}
+
+/* Accessibility */
+.textarea:focus-visible {
+  outline: 2px solid #ff8c42;
+  outline-offset: 2px;
+}
+
+.checkboxLabel input[type="checkbox"]:focus-visible,
+.checkboxLabel input[type="radio"]:focus-visible {
+  outline: 2px solid #ff8c42;
+  outline-offset: 2px;
+}

@@ -1,0 +1,223 @@
+.breadcrumbs {
+  font-family: var(--font-family-secondary);
+  font-size: var(--text-sm);
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--space-xs);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.separator {
+  color: var(--neutral-medium);
+  font-size: var(--text-xs);
+  user-select: none;
+  margin: 0 var(--space-xs);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  text-decoration: none;
+  color: var(--primary-orange);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.link:hover {
+  color: var(--primary-orange-hover);
+  background: rgba(255, 140, 66, 0.15);
+}
+
+.link:hover .icon {
+  transform: scale(1.1);
+}
+
+.text {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-weight: var(--font-medium);
+}
+
+.currentText {
+  color: var(--neutral-dark);
+  font-weight: var(--font-semibold);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--primary-orange);
+  border-radius: var(--radius-sm);
+}
+
+.icon {
+  font-size: var(--text-sm);
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+}
+
+.current .icon {
+  filter: grayscale(0);
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+  .list {
+    font-size: var(--text-xs);
+  }
+  
+  .separator {
+    margin: 0 var(--space-xs);
+    font-size: 10px;
+  }
+  
+  .link,
+  .currentText {
+    padding: var(--space-xs);
+  }
+  
+  /* Ocultar ícones em telas muito pequenas */
+  .icon {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .list {
+    gap: 2px;
+  }
+  
+  /* Limitar breadcrumbs em mobile - mostrar apenas os últimos 2 */
+  .item:not(:nth-last-child(-n+2)) {
+    display: none;
+  }
+  
+  /* Mostrar indicador de mais itens */
+  .list::before {
+    content: '... ';
+    color: var(--neutral-medium);
+    font-size: var(--text-xs);
+  }
+}
+
+/* Estados de foco para acessibilidade */
+.link:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+/* Animações sutis */
+.link {
+  position: relative;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1px;
+  background: var(--primary-orange);
+  transition: width 0.2s ease;
+}
+
+.link:hover::after {
+  width: 80%;
+}
+
+/* Variação com estilo de chips */
+.breadcrumbs.chips .link {
+  background: var(--neutral-light);
+  border-radius: var(--radius-full);
+  padding: var(--space-xs) var(--space-md);
+}
+
+.breadcrumbs.chips .link:hover {
+  background: var(--primary-orange);
+  color: var(--neutral-white);
+}
+
+.breadcrumbs.chips .currentText {
+  background: var(--primary-orange);
+  color: var(--neutral-white);
+  border-radius: var(--radius-full);
+  padding: var(--space-xs) var(--space-md);
+}
+
+/* Variação com separador customizado */
+.breadcrumbs.arrows .separator {
+  font-size: var(--text-base);
+  color: var(--primary-orange);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .link {
+    border: 1px solid transparent;
+  }
+  
+  .link:hover {
+    border-color: var(--primary-orange);
+    background: var(--neutral-white);
+  }
+  
+  .currentText {
+    border: 1px solid var(--primary-orange);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .icon {
+    transition: none;
+  }
+  
+  .link::after {
+    transition: none;
+  }
+}
+
+/* Dark mode support (para futuro) */
+@media (prefers-color-scheme: dark) {
+  .breadcrumbs {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .separator {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .link {
+    color: var(--primary-orange);
+  }
+  
+  .link:hover {
+    color: var(--primary-orange-hover);
+    background: rgba(255, 140, 66, 0.2);
+  }
+  
+  .currentText {
+    color: rgba(255, 255, 255, 0.9);
+    background: var(--primary-orange);
+    border-radius: var(--radius-full);
+    padding: var(--space-xs) var(--space-md);
+  }
+}

@@ -1,0 +1,264 @@
+.card {
+  background-color: white;
+}
+
+.container {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+.logoSection {
+  flex-shrink: 0;
+}
+
+.logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  border: 2px solid #eee;
+}
+
+.infoSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-neutral-dark);
+}
+
+.description {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-medium);
+  line-height: 1.5;
+}
+
+.detail {
+  display: flex;
+  gap: 0.5rem;
+  font-size: var(--font-size-sm);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--color-neutral-dark);
+}
+
+.value {
+  color: var(--color-neutral-medium);
+}
+
+.link {
+  color: var(--color-primary-blue);
+  text-decoration: none;
+  transition: color 0.2s;
+  word-break: break-all;
+}
+
+.link:hover {
+  color: var(--color-primary-orange);
+  text-decoration: underline;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statNumber {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-primary-orange);
+}
+
+.statLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-medium);
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.gallery {
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+}
+
+.galleryTitle {
+  margin: 0 0 1rem 0;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-neutral-dark);
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.galleryItem {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+  background-color: #f9f9f9;
+}
+
+.galleryItem:hover {
+  transform: scale(1.02);
+}
+
+.galleryItem a {
+  text-decoration: none;
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.morePhotos {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  text-decoration: none;
+  gap: 0.5rem;
+}
+
+.moreCount {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-primary-blue);
+}
+
+.moreText {
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-medium);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+
+  .logoSection {
+    display: flex;
+    justify-content: center;
+  }
+
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .statNumber {
+    font-size: var(--font-size-base);
+  }
+
+  .title {
+    font-size: var(--font-size-base);
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+
+  .gallery {
+    padding-top: 1rem;
+  }
+
+  .galleryTitle {
+    margin-bottom: 0.75rem;
+    font-size: var(--font-size-sm);
+  }
+
+  .galleryGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .statNumber {
+    font-size: var(--font-size-sm);
+  }
+
+  .statLabel {
+    font-size: var(--font-size-xs);
+  }
+
+  .detail {
+    font-size: var(--font-size-xs);
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .actions {
+    gap: 0.5rem;
+  }
+}

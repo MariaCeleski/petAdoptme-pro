@@ -1,0 +1,33 @@
+{
+  "name": "petadopt-monorepo",
+  "version": "1.0.0",
+  "description": "PetAdopt - Plataforma de Adoção de Animais (Monorepo)",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:web": "turbo run dev --filter=@petadopt/web",
+    "dev:api": "turbo run dev --filter=@petadopt/api",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@petadopt/web",
+    "build:api": "turbo run build --filter=@petadopt/api",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:migrate": "turbo run db:migrate --filter=@petadopt/api",
+    "db:seed": "turbo run db:seed --filter=@petadopt/api"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,390 @@
+.skeleton {
+  background: var(--neutral-lighter);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.animated::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Base variants */
+.text {
+  height: 1em;
+  border-radius: var(--radius-sm);
+}
+
+.circle {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
+}
+
+.button {
+  height: 40px;
+  border-radius: var(--radius-md);
+  min-width: 80px;
+}
+
+.input {
+  height: 44px;
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.rounded {
+  border-radius: var(--radius-lg);
+}
+
+/* Text specific */
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.lastLine {
+  width: 70% !important;
+}
+
+/* Card skeleton */
+.cardSkeleton {
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--neutral-white);
+}
+
+.cardImage {
+  width: 100%;
+  border-radius: 0;
+  border-bottom: 1px solid var(--neutral-light);
+}
+
+.cardContent {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.cardTitle {
+  margin-bottom: var(--space-sm);
+}
+
+.cardDescription {
+  margin-bottom: var(--space-md);
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--neutral-lighter);
+}
+
+/* Avatar skeleton */
+.avatarSkeleton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.avatarInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* List skeleton */
+.listSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: 1px solid var(--neutral-lighter);
+  border-radius: var(--radius-md);
+  background: var(--neutral-white);
+}
+
+.listContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.listActions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Table skeleton */
+.tableSkeleton {
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--neutral-white);
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 4), 1fr);
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--neutral-lighter);
+  background: var(--neutral-lighter);
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 4), 1fr);
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--neutral-lighter);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+/* Form skeleton */
+.formSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.formLabel {
+  margin-bottom: var(--space-xs);
+}
+
+.formActions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--neutral-lighter);
+}
+
+/* Grid layouts */
+.gridSkeleton {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+/* Pulse variant for non-animated loading */
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Size variants */
+.small .text {
+  height: 0.75em;
+}
+
+.small .button {
+  height: 32px;
+}
+
+.small .input {
+  height: 36px;
+}
+
+.large .text {
+  height: 1.25em;
+}
+
+.large .button {
+  height: 48px;
+}
+
+.large .input {
+  height: 52px;
+}
+
+/* Theme variants */
+.dark {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark.animated::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cardContent {
+    padding: var(--space-md);
+  }
+  
+  .listItem {
+    padding: var(--space-sm);
+  }
+  
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+  
+  .avatarSkeleton {
+    gap: var(--space-sm);
+  }
+  
+  .cardActions {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .gridSkeleton {
+    grid-template-columns: 1fr;
+  }
+  
+  .avatarSkeleton {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  
+  .listActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+  .skeleton {
+    border: 1px solid var(--neutral-medium);
+  }
+  
+  .animated::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 0, 0, 0.3),
+      transparent
+    );
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animated::after {
+    animation: none;
+    background: none;
+  }
+  
+  .skeleton.animated {
+    background: var(--neutral-light);
+  }
+  
+  .pulse {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* Focus states for accessibility */
+.skeleton:focus {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: 2px;
+}
+
+/* Screen reader support */
+.skeleton[aria-label]::before {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

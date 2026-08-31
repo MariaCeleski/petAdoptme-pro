@@ -1,0 +1,149 @@
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.emptyIcon {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  color: #d1d5db;
+}
+
+.emptyText {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.timeline {
+  position: relative;
+  padding: 1rem 0;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.timelineDot {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  background-color: #f3f4f6;
+  border: 2px solid #e5e7eb;
+}
+
+.dotPending {
+  background-color: #fffbeb;
+  border-color: #f59e0b;
+}
+
+.dotApproved {
+  background-color: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.dotRejected {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+}
+
+.dotCompleted {
+  background-color: #dcfce7;
+  border-color: #10b981;
+}
+
+.dotCancelled {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.timelineLine {
+  position: absolute;
+  left: calc(1.5rem + 0.75rem);
+  top: 3rem;
+  width: 2px;
+  height: calc(100% + 0.5rem);
+  background-color: #e5e7eb;
+}
+
+.content {
+  flex: 1;
+  padding-top: 0.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+  }
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.time {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.petInfo {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.petName {
+  font-weight: 500;
+}
+
+.separator {
+  color: #d1d5db;
+}
+
+.petBreed {
+  color: #6b7280;
+}
+
+.rejectionReason {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: #fef2f2;
+  border-left: 3px solid #ef4444;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #7f1d1d;
+}
+
+.rejectionReason strong {
+  color: #991b1b;
+}
+
+.statusText {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.75rem 0 0 0;
+  font-style: italic;
+}

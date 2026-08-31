@@ -1,0 +1,240 @@
+/* OptimizedImage Component Styles */
+
+.container {
+  position: relative;
+  display: block;
+  width: 100%;
+  background: var(--color-neutral-light);
+  overflow: hidden;
+}
+
+.fill {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.rounded {
+  border-radius: 0.75rem;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.image.loaded {
+  opacity: 1;
+}
+
+.fadeIn .image.loaded {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.objectCover {
+  object-fit: cover;
+}
+
+.objectContain {
+  object-fit: contain;
+}
+
+.objectFill {
+  object-fit: fill;
+}
+
+.zoomOnHover {
+  cursor: pointer;
+}
+
+.zoomOnHover .image {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.zoomOnHover:hover .image.loaded {
+  transform: scale(1.05);
+}
+
+/* Loading states */
+.loading {
+  background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+              linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  animation: patternMove 1s linear infinite;
+}
+
+@keyframes patternMove {
+  0% {
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+  100% {
+    background-position: 20px 20px, 20px 30px, 30px 10px, 10px 20px;
+  }
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-neutral-light);
+}
+
+.loadingOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(240, 240, 240, 0.8);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(74, 144, 226, 0.2);
+  border-top: 3px solid var(--color-primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state */
+.error {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.errorState {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-error);
+  text-align: center;
+  padding: 1rem;
+}
+
+.errorIcon {
+  font-size: 2rem;
+  opacity: 0.7;
+}
+
+.errorText {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .zoomOnHover:hover .image.loaded {
+    transform: none; /* Disable zoom on touch devices */
+  }
+  
+  .spinner {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 2px;
+  }
+  
+  .errorIcon {
+    font-size: 1.5rem;
+  }
+  
+  .errorText {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .zoomOnHover .image {
+    transition: none;
+  }
+  
+  .fadeIn .image.loaded {
+    animation: none;
+  }
+  
+  .zoomOnHover:hover .image.loaded {
+    transform: none;
+  }
+  
+  .spinner {
+    animation: none;
+    border-top-color: transparent;
+    border-right-color: var(--color-primary-blue);
+  }
+  
+  .loading {
+    animation: none;
+    background: var(--color-neutral-light);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .container {
+    border: 2px solid var(--color-neutral-medium);
+  }
+  
+  .error {
+    border-width: 2px;
+    border-color: var(--color-error);
+  }
+  
+  .errorState {
+    color: var(--color-error);
+    background: rgba(231, 76, 60, 0.1);
+  }
+}
+
+/* Focus styles */
+.zoomOnHover:focus-visible {
+  outline: 2px solid var(--color-primary-blue);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Print styles */
+@media print {
+  .loadingOverlay,
+  .placeholder,
+  .spinner {
+    display: none;
+  }
+  
+  .image {
+    opacity: 1;
+  }
+}

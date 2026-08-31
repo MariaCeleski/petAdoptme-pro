@@ -1,0 +1,276 @@
+.navigation {
+  background: var(--neutral-white);
+  border-bottom: 1px solid var(--neutral-light);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 900;
+}
+
+.navigation.scrolled {
+  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.navigationContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) 0;
+  min-height: 56px;
+}
+
+.navigationList {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.navigationItem {
+  position: relative;
+}
+
+.navigationLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
+  color: var(--neutral-medium);
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 44px; /* Touch-friendly minimum size */
+  touch-action: manipulation; /* Optimize for touch */
+}
+
+.navigationLink:hover {
+  color: var(--primary-orange);
+  background: rgba(255, 140, 66, 0.1);
+  transform: translateY(-1px);
+}
+
+.navigationLink.active {
+  color: var(--primary-orange);
+  background: rgba(255, 140, 66, 0.15);
+  font-weight: var(--font-semibold);
+}
+
+.linkIcon {
+  font-size: var(--text-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  filter: grayscale(0.3);
+  transition: filter 0.2s ease;
+}
+
+.navigationLink:hover .linkIcon,
+.navigationLink.active .linkIcon {
+  filter: grayscale(0);
+}
+
+.linkText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activeIndicator {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--primary-orange);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+/* Indicador de progresso */
+.progressIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0 var(--space-lg);
+}
+
+.progressBar {
+  width: 120px;
+  height: 4px;
+  background: var(--neutral-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-green), var(--primary-orange));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: var(--text-xs);
+  color: var(--neutral-medium);
+  font-weight: var(--font-medium);
+}
+
+/* Quick Actions */
+.quickActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.quickAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; /* Increased for touch */
+  height: 40px; /* Increased for touch */
+  border-radius: var(--radius-md);
+  background: var(--neutral-lighter);
+  text-decoration: none;
+  font-size: var(--text-base);
+  transition: all 0.2s ease;
+  position: relative;
+  touch-action: manipulation; /* Optimize for touch */
+}
+
+.quickAction:hover {
+  background: var(--primary-orange);
+  transform: translateY(-2px) scale(1.1);
+}
+
+.quickAction:active {
+  transform: translateY(0) scale(1);
+}
+
+/* Animações */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1.2);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .progressIndicator {
+    display: none;
+  }
+  
+  .quickActions {
+    gap: var(--space-xs);
+  }
+  
+  .quickAction {
+    width: 32px;
+    height: 32px;
+    font-size: var(--text-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  /* No mobile, o Navigation não é exibido */
+  .navigation {
+    display: none;
+  }
+}
+
+/* Para telas pequenas de desktop */
+@media (max-width: 900px) {
+  .navigationList {
+    gap: 2px;
+  }
+  
+  .navigationLink {
+    padding: var(--space-sm);
+    font-size: var(--text-xs);
+  }
+  
+  .linkText {
+    display: none; /* Mostrar apenas ícones */
+  }
+  
+  .navigationLink {
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+  }
+  
+  .linkIcon {
+    font-size: var(--text-lg);
+  }
+}
+
+/* Estados de hover para acessibilidade */
+@media (hover: hover) {
+  .navigationLink:hover {
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+/* Versão compacta para páginas específicas */
+.navigation.compact {
+  padding: var(--space-sm) 0;
+}
+
+.navigation.compact .navigationContent {
+  min-height: 48px;
+}
+
+.navigation.compact .navigationLink {
+  padding: var(--space-xs) var(--space-sm);
+  min-height: 36px;
+}
+
+/* Focus states para acessibilidade */
+.navigationLink:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+.quickAction:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .navigationLink {
+    border: 1px solid transparent;
+  }
+  
+  .navigationLink:hover,
+  .navigationLink.active {
+    border-color: var(--primary-orange);
+    background: var(--neutral-white);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .navigationLink,
+  .quickAction,
+  .progressFill,
+  .activeIndicator {
+    transition: none;
+    animation: none;
+  }
+}

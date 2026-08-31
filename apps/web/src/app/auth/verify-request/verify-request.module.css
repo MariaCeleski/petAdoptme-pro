@@ -1,0 +1,422 @@
+/* Verify Request Page Styles */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F8F9FA 0%, #E3F2FD 100%);
+  padding: 1.5rem;
+}
+
+.card {
+  max-width: 500px;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+/* Icon Container */
+.iconContainer {
+  margin-bottom: 2rem;
+}
+
+.iconBadge {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #4A90E2 0%, #9B59B6 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.iconSvg {
+  width: 50px;
+  height: 50px;
+  color: white;
+}
+
+/* Title & Description */
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2C3E50;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+.description {
+  font-size: 1rem;
+  color: #7F8C8D;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.6;
+}
+
+.emailHighlight {
+  font-weight: 700;
+  color: #FF8C42;
+  word-break: break-all;
+}
+
+/* Steps Section */
+.stepsSection {
+  margin: 2.5rem 0;
+  text-align: left;
+}
+
+.stepsTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.stepsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stepItem {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem;
+  background: #F8F9FA;
+  border-radius: 12px;
+  border-left: 4px solid #4A90E2;
+  transition: all 0.2s ease;
+}
+
+.stepItem:hover {
+  background: #EEF2F7;
+  transform: translateX(4px);
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #4A90E2 0%, #9B59B6 100%);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.stepText {
+  font-size: 0.95rem;
+  color: #7F8C8D;
+  line-height: 1.5;
+}
+
+/* Info Box */
+.infoBox {
+  background: linear-gradient(135deg, #E8F4F8 0%, #F0E6FF 100%);
+  border: 2px solid #4A90E2;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.infoTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #4A90E2;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.infoText {
+  font-size: 0.9rem;
+  color: #7F8C8D;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.infoLink {
+  color: #FF8C42;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.infoLink:hover {
+  color: #E6763A;
+  text-decoration: underline;
+}
+
+/* Buttons Section */
+.buttonsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #4A90E2 0%, #3A7BC8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+  background: linear-gradient(135deg, #3A7BC8 0%, #2A6BB8 100%);
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  background: white;
+  color: #FF8C42;
+  border: 2px solid #FF8C42;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.secondaryButton:hover {
+  background: #FF8C42;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 140, 66, 0.3);
+}
+
+/* Help Text */
+.helpText {
+  font-size: 0.85rem;
+  color: #7F8C8D;
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+
+.helpLink {
+  color: #4A90E2;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.helpLink:hover {
+  color: #3A7BC8;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 2rem 1.5rem;
+  }
+
+  .iconBadge {
+    width: 80px;
+    height: 80px;
+  }
+
+  .iconSvg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .stepsTitle {
+    font-size: 0.95rem;
+  }
+
+  .stepItem {
+    padding: 0.75rem;
+  }
+
+  .stepNumber {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .stepText {
+    font-size: 0.9rem;
+  }
+
+  .infoBox {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .infoTitle {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .infoText {
+    font-size: 0.85rem;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .helpText {
+    font-size: 0.8rem;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1.5rem 1rem;
+  }
+
+  .iconBadge {
+    width: 70px;
+    height: 70px;
+  }
+
+  .iconSvg {
+    width: 35px;
+    height: 35px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .description {
+    font-size: 0.85rem;
+  }
+
+  .stepsTitle {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .stepItem {
+    gap: 0.75rem;
+    padding: 0.625rem;
+    border-left-width: 3px;
+  }
+
+  .stepNumber {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .stepText {
+    font-size: 0.8rem;
+  }
+
+  .infoBox {
+    padding: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .infoTitle {
+    font-size: 0.75rem;
+  }
+
+  .infoText {
+    font-size: 0.8rem;
+  }
+
+  .buttonsSection {
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .helpText {
+    font-size: 0.75rem;
+    margin-top: 0.75rem;
+  }
+}
+
+/* Link reset */
+/* a {
+  text-decoration: none;
+} */
+
+/* Focus states */
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.helpLink:focus-visible,
+.infoLink:focus-visible {
+  outline: 2px solid #4A90E2;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .container {
+    background: white;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ECF0F1;
+  }
+
+  .buttonsSection {
+    display: none;
+  }
+}

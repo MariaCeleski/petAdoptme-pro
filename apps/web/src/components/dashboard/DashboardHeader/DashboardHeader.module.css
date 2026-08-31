@@ -1,0 +1,305 @@
+.header {
+  background: var(--neutral-white);
+  border-bottom: 1px solid var(--neutral-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  max-width: 100%;
+  padding: 0 var(--space-lg);
+  gap: var(--space-xl);
+}
+
+/* Brand/Logo */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  text-decoration: none;
+  color: var(--neutral-dark);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-lg);
+  transition: color 0.2s ease;
+}
+
+.brand:hover {
+  color: var(--primary-orange);
+}
+
+.brandEmoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.brandText {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .brandText {
+    display: inline;
+  }
+}
+
+/* Right section */
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-left: auto;
+}
+
+/* Quick actions */
+.quickActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--neutral-lighter);
+  text-decoration: none;
+  font-size: 1.25rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.actionButton:hover {
+  background: var(--neutral-light);
+  color: var(--primary-orange);
+  transform: scale(1.1);
+}
+
+.actionButton:active {
+  transform: scale(0.95);
+}
+
+/* User menu */
+.userMenu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: transparent;
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem var(--space-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: var(--text-sm);
+}
+
+.userButton:hover {
+  background: var(--neutral-lighter);
+  border-color: var(--primary-orange);
+}
+
+.userButton:active {
+  background: var(--neutral-light);
+}
+
+.userButton:focus {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: 2px;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-align: left;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.userName {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--neutral-dark);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userType {
+  font-size: var(--text-xs);
+  color: var(--neutral-medium);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  font-size: var(--text-xs);
+  color: var(--neutral-medium);
+  transition: transform 0.2s ease;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--space-sm);
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--neutral-dark);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+  font-weight: normal;
+}
+
+.dropdownItem:hover {
+  background: var(--neutral-lighter);
+  color: var(--primary-orange);
+  padding-left: calc(var(--space-lg) + 4px);
+}
+
+.dropdownItem:active {
+  background: var(--neutral-light);
+}
+
+.signOut {
+  color: var(--error);
+  border-top: 1px solid var(--neutral-lighter);
+  margin-top: var(--space-xs);
+  padding-top: var(--space-md);
+}
+
+.signOut:hover {
+  background: rgba(231, 76, 60, 0.05);
+  color: var(--error);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container {
+    height: 64px;
+    padding: 0 var(--space-md);
+    gap: var(--space-md);
+  }
+
+  .quickActions {
+    gap: var(--space-sm);
+  }
+
+  .actionButton {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .userButton {
+    padding: 0.25rem var(--space-sm);
+    border-radius: var(--radius-md);
+  }
+
+  .userInfo {
+    display: none;
+  }
+
+  .chevron {
+    display: none;
+  }
+
+  .dropdown {
+    min-width: 160px;
+  }
+
+  .dropdownItem {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-xs);
+  }
+
+  .dropdownItem:hover {
+    padding-left: calc(var(--space-md) + 4px);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .header {
+    border-bottom: 2px solid var(--neutral-dark);
+  }
+
+  .actionButton,
+  .userButton {
+    border: 2px solid var(--neutral-dark);
+  }
+
+  .actionButton:hover,
+  .userButton:hover {
+    border-color: var(--primary-orange);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .brand,
+  .actionButton,
+  .userButton,
+  .chevron,
+  .dropdownItem {
+    transition: none;
+  }
+
+  .actionButton:hover,
+  .actionButton:active {
+    transform: none;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+.actionButton:focus-visible {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: 2px;
+}
+
+.dropdownItem:focus-visible {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: -2px;
+}

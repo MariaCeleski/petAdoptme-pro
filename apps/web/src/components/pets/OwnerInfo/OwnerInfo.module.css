@@ -1,0 +1,309 @@
+.ownerInfoCard {
+  border: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* Section Header */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.sectionIcon {
+  color: var(--color-primary-600);
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+/* Owner Content */
+.ownerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Basic Info */
+.basicInfo {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.ownerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.ownerName {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.typeBadge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-700);
+  border: 1px solid var(--color-gray-300);
+}
+
+.shelterDescription {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-gray-600);
+  margin: 0;
+  padding: 0.75rem;
+  background-color: var(--color-gray-50);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--color-primary-300);
+}
+
+/* Contact Info */
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contactTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-gray-800);
+  margin: 0 0 0.75rem 0;
+}
+
+.contactTitle svg {
+  color: var(--color-primary-600);
+}
+
+.contactGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background-color: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.contactItem:hover {
+  background-color: var(--color-gray-100);
+  border-color: var(--color-primary-300);
+  transform: translateY(-1px);
+}
+
+.contactItem:active {
+  transform: translateY(0);
+}
+
+.contactIcon {
+  color: var(--color-primary-600);
+  flex-shrink: 0;
+}
+
+.contactDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.contactLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.contactValue {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-900);
+}
+
+/* Contact Actions */
+.contactActions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.contactButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.contactButton:hover {
+  transform: translateY(-1px);
+}
+
+.contactButton:active {
+  transform: translateY(0);
+}
+
+.contactButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Trust Indicators */
+.trustIndicators {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.trustItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.trustLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-600);
+}
+
+.trustValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+/* Privacy Notice */
+.privacyNotice {
+  padding: 1rem;
+  background-color: var(--color-blue-50);
+  border: 1px solid var(--color-blue-200);
+  border-radius: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.privacyNotice p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-blue-800);
+  margin: 0;
+}
+
+.privacyNotice strong {
+  color: var(--color-blue-900);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .ownerContent {
+    gap: 1.25rem;
+  }
+
+  .ownerHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .contactActions {
+    flex-direction: column;
+  }
+
+  .contactButton {
+    justify-content: center;
+  }
+
+  .contactItem {
+    padding: 0.75rem;
+  }
+
+  .contactDetails {
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sectionHeader {
+    margin-bottom: 1.25rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.125rem;
+  }
+
+  .contactItem {
+    padding: 0.625rem;
+  }
+
+  .contactValue {
+    font-size: 0.8125rem;
+  }
+
+  .contactButton {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .privacyNotice {
+    padding: 0.875rem;
+  }
+
+  .privacyNotice p {
+    font-size: 0.8125rem;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .contactItem {
+    border-width: 2px;
+  }
+
+  .contactItem:hover {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .contactItem,
+  .contactButton {
+    transition: none;
+  }
+
+  .contactItem:hover,
+  .contactButton:hover {
+    transform: none;
+  }
+}

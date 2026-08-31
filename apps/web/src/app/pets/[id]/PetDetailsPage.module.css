@@ -1,0 +1,314 @@
+.petDetailsPage {
+  min-height: 100vh;
+  background-color: var(--color-gray-50);
+}
+
+/* Header */
+.header {
+  background-color: white;
+  border-bottom: 1px solid var(--color-gray-200);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-gray-600);
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: var(--color-primary-600);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.favoriteButton {
+  color: var(--color-gray-500);
+  transition: color 0.2s ease;
+}
+
+.favoriteButton:hover,
+.favoriteButton.active {
+  color: var(--color-red-500);
+}
+
+.shareButton {
+  color: var(--color-gray-500);
+  transition: color 0.2s ease;
+}
+
+.shareButton:hover {
+  color: var(--color-primary-600);
+}
+
+/* Main Content */
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 968px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+/* Gallery Section */
+.gallerySection {
+  position: sticky;
+  top: 8rem;
+  height: fit-content;
+}
+
+.petGallery {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Info Section */
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.basicInfoCard {
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.petHeader {
+  margin-bottom: 1.5rem;
+}
+
+.petTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.petName {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.statusBadge {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+}
+
+.petSubtitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  color: var(--color-gray-600);
+}
+
+.breed {
+  font-weight: 600;
+}
+
+.separator {
+  color: var(--color-gray-400);
+}
+
+.species {
+  color: var(--color-gray-500);
+}
+
+/* Quick Info */
+.quickInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--color-gray-50);
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-700);
+}
+
+.infoIcon {
+  color: var(--color-primary-600);
+  flex-shrink: 0;
+}
+
+/* Interest Button */
+.interestButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-700));
+  border: none;
+  box-shadow: 0 4px 15px rgba(var(--color-primary-600-rgb), 0.3);
+  transition: all 0.2s ease;
+}
+
+.interestButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--color-primary-600-rgb), 0.4);
+}
+
+.interestButton:active {
+  transform: translateY(0);
+}
+
+/* Status Messages */
+.unavailableMessage,
+.loginMessage {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+.unavailableMessage {
+  background-color: var(--color-yellow-50);
+  border: 1px solid var(--color-yellow-200);
+  color: var(--color-yellow-800);
+}
+
+.loginMessage {
+  background-color: var(--color-blue-50);
+  border: 1px solid var(--color-blue-200);
+  color: var(--color-blue-800);
+}
+
+.loginMessage p {
+  margin-bottom: 1rem;
+}
+
+.loginButton {
+  border-color: var(--color-blue-300);
+  color: var(--color-blue-700);
+}
+
+.loginButton:hover {
+  background-color: var(--color-blue-100);
+}
+
+/* Success Stories Section */
+.successStoriesSection {
+  margin-bottom: 3rem;
+}
+
+/* Related Pets Section */
+.relatedPetsSection {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.sectionSubtitle {
+  font-size: 1rem;
+  color: var(--color-gray-600);
+  margin-bottom: 1.5rem;
+}
+
+.relatedPetsPlaceholder {
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--color-gray-50);
+  border-radius: 0.75rem;
+  color: var(--color-gray-500);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 1.5rem 1rem;
+  }
+
+  .headerContent {
+    padding: 1rem;
+  }
+
+  .petName {
+    font-size: 1.75rem;
+  }
+
+  .petTitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .quickInfo {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .infoItem {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .gallerySection {
+    position: static;
+  }
+}
+
+@media (max-width: 480px) {
+  .quickInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .petSubtitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .separator {
+    display: none;
+  }
+}

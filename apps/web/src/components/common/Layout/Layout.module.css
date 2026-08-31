@@ -1,0 +1,181 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.navigation {
+  position: sticky;
+  top: 64px; /* Altura do header */
+  z-index: 900;
+  background: var(--neutral-white);
+  border-bottom: 1px solid var(--neutral-light);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Importante para flex grow */
+}
+
+.contentWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.breadcrumbsWrapper {
+  background: var(--neutral-lighter);
+  border-bottom: 1px solid var(--neutral-light);
+  padding: var(--space-sm) 0;
+}
+
+.titleWrapper {
+  background: var(--neutral-white);
+  padding: var(--space-xl) 0 var(--space-lg);
+  border-bottom: 1px solid var(--neutral-light);
+}
+
+.pageTitle {
+  font-family: var(--font-family-primary);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--neutral-dark);
+  margin: 0;
+  text-align: center;
+}
+
+.content {
+  flex: 1;
+  padding: var(--space-lg) 0;
+  min-height: 400px; /* Altura mínima para o conteúdo */
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  touch-action: manipulation; /* Optimize for touch */
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Breakpoints responsivos */
+
+@media (max-width: 768px) {
+  .navigation {
+    display: none; /* Oculta navigation no mobile */
+  }
+
+  .pageTitle {
+    font-size: var(--text-2xl);
+    text-align: left;
+  }
+
+  .titleWrapper {
+    padding: var(--space-lg) 0 var(--space-md);
+  }
+
+  .content {
+    padding: var(--space-md) 0;
+  }
+
+  .breadcrumbsWrapper {
+    padding: var(--space-xs) 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .pageTitle {
+    font-size: var(--text-xl);
+  }
+
+  .titleWrapper {
+    padding: var(--space-md) 0 var(--space-sm);
+  }
+}
+
+/* Estados de loading */
+.layout.loading .content {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Animações */
+.contentWrapper {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Para páginas fullscreen (sem navigation) */
+.layout.fullscreen .navigation {
+  display: none;
+}
+
+.layout.fullscreen .main {
+  margin-top: 0;
+}
+
+/* Para páginas com sidebar sempre visível (dashboard) */
+.layout.withSidebar {
+  display: grid;
+  grid-template-areas: 
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: auto 1fr auto;
+}
+
+.layout.withSidebar .main {
+  grid-area: main;
+  margin-left: 0;
+}
+
+@media (max-width: 1024px) {
+  .layout.withSidebar {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .layout.withSidebar .main {
+    margin-left: 0;
+  }
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .contentWrapper,
+  .overlay {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Focus states */
+.overlay:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: -2px;
+}

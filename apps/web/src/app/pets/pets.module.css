@@ -1,0 +1,218 @@
+/* Pets Page Styles */
+
+.heroSection {
+  background: linear-gradient(135deg, #FF8C42 0%, #4A90E2 100%);
+  color: white;
+  padding: 5rem 1.5rem;
+  position: relative;
+}
+
+.heroContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.homeButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.125rem 2rem;
+  background: linear-gradient(135deg, #FF8C42 0%, #FFB380 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.2);
+}
+
+.homeButton:hover {
+  transform: translateX(4px) translateY(-2px);
+  box-shadow: 0 12px 24px rgba(255, 140, 66, 0.35);
+  background: linear-gradient(135deg, #FFB380 0%, #FF8C42 100%);
+}
+
+.homeButton:active {
+  transform: translateX(2px);
+}
+
+.homeButtonArrow {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.heroContent {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.heroTitle .highlight {
+  color: #F7DC6F;
+  display: inline;
+}
+
+.heroDescription {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #fff;
+  opacity: 0.9;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+}
+
+/* Stats Container */
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.statCard {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.statCard:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-4px);
+}
+
+.statIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.statNumber {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.statLabel {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Main Content Section */
+.mainContent {
+  background: white;
+  padding: 2rem 1.5rem;
+}
+
+.mainContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 4rem 1rem 3rem;
+  }
+
+  .homeButton {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .homeButtonArrow {
+    font-size: 1rem;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroDescription {
+    font-size: 1rem;
+  }
+
+  .statsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .statCard {
+    padding: 1rem;
+  }
+
+  .statIcon {
+    font-size: 2rem;
+  }
+
+  .statNumber {
+    font-size: 1.5rem;
+  }
+
+  .mainContent {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroSection {
+    padding: 3.5rem 1rem 2rem;
+  }
+
+  .homeButton {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.8rem;
+  }
+
+  .homeButtonArrow {
+    font-size: 0.9rem;
+  }
+
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroDescription {
+    font-size: 0.95rem;
+  }
+
+  .statsContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .statCard {
+    padding: 1rem;
+  }
+
+  .statIcon {
+    font-size: 1.75rem;
+  }
+
+  .statNumber {
+    font-size: 1.25rem;
+  }
+}
