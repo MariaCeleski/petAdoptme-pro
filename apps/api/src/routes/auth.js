@@ -7,6 +7,7 @@
  * POST /api/auth/password-reset - Request password reset
  * POST /api/auth/password-reset/:token - Complete password reset
  * GET /api/auth/me - Get current user
+ * POST /api/auth/refresh - Refresh token
  */
 
 import { Router } from 'express';
@@ -20,7 +21,7 @@ const router = Router();
 // Apply sanitization to all routes
 router.use(sanitizeInputs);
 
-// Apply rate limiting
+// Apply rate limiting - more restrictive for auth
 router.use(rateLimit(10, 60000)); // 10 requests per minute
 
 /**
@@ -64,5 +65,11 @@ router.post('/password-reset/:token', asyncHandler(authController.resetPassword)
  * Get current authenticated user
  */
 router.get('/me', requireAuth, asyncHandler(authController.getCurrentUser));
+
+/**
+ * POST /api/auth/refresh
+ * Refresh JWT token
+ */
+router.post('/refresh', requireAuth, asyncHandler(authController.refreshAccessToken));
 
 export default router;

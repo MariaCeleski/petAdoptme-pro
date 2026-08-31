@@ -5,6 +5,7 @@
 
 import { ApiError } from '../middleware/errorHandler.js';
 import { insert, select } from '../services/supabaseClient.js';
+import { generateToken, verifyToken, refreshToken } from '../middleware/auth.js';
 import { userLoginSchema, userRegisterSchema, passwordResetSchema } from '@petadopt/shared';
 
 /**
@@ -25,9 +26,10 @@ export async function register(req, res, next) {
       );
     }
 
-    // In production, hash password with bcrypt
-    // const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedPassword = password; // Placeholder
+    // In production, use bcrypt to hash password
+    // For now, we'll store it as-is (NOT SECURE - implement bcrypt in next step)
+    // TODO: const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = password;
 
     // Create user
     const newUser = await insert('users', {
@@ -49,11 +51,19 @@ export async function register(req, res, next) {
 
     const user = newUser[0];
 
+    // Generate JWT token
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      role: user.user_type,
+    });
+
     // TODO: Send verification email
     // await sendVerificationEmail(user.email, user.id);
 
     res.status(201).json({
       message: 'User created successfully',
+      token,
       user: {
         id: user.id,
         email: user.email,
@@ -87,8 +97,8 @@ export async function login(req, res, next) {
     const user = users[0];
 
     // In production, use bcrypt to compare passwords
-    // const validPassword = await bcrypt.compare(password, user.password);
-    const validPassword = password === user.password; // Placeholder
+    // TODO: const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = password === user.password; // NOT SECURE - temporary
 
     if (!validPassword) {
       throw new ApiError(
@@ -98,12 +108,12 @@ export async function login(req, res, next) {
       );
     }
 
-    // TODO: Generate JWT token
-    // const token = jwt.sign({ userId: user.id, email: user.email, role: user.user_type }, process.env.JWT_SECRET, {
-    //   expiresIn: '24h',
-    // });
-
-    const token = 'mock-token'; // Placeholder
+    // Generate JWT token
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      role: user.user_type,
+    });
 
     res.status(200).json({
       message: 'Login successful',
@@ -259,6 +269,36 @@ export async function getCurrentUser(req, res, next) {
         emailVerified: user.email_verified,
         createdAt: user.created_at,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * POST /api/auth/refresh
+ * Refresh JWT token
+ */
+export async function refreshAccessToken(req, res, next) {
+  try {
+    if (!req.user) {
+      throw new ApiError(
+        'Authentication required',
+        401,
+        'NOT_AUTHENTICATED'
+      );
+    }
+
+    // Generate new token
+    const newToken = generateToken({
+      userId: req.user.userId,
+      email: req.user.email,
+      role: req.user.role,
+    });
+
+    res.status(200).json({
+      message: 'Token refreshed successfully',
+      token: newToken,
     });
   } catch (error) {
     next(error);
