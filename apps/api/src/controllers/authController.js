@@ -1,16 +1,47 @@
 /**
  * Authentication Controller
  * Handles user registration, login, and password management
+ * Uses bcryptjs for secure password hashing
  */
 
+import bcrypt from 'bcryptjs';
 import { ApiError } from '../middleware/errorHandler.js';
-import { insert, select } from '../services/supabaseClient.js';
-import { generateToken, verifyToken, refreshToken } from '../middleware/auth.js';
+import { insert, select, update } from '../services/supabaseClient.js';
 import { userLoginSchema, userRegisterSchema, passwordResetSchema } from '@petadopt/shared';
 
 /**
+ * Hash password using bcryptjs
+ * @param {string} password - Plain text password
+ * @returns {Promise<string>} Hashed password
+ */
+async function hashPassword(password) {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
+  } catch (error) {
+    console.error('Error hashing password:', error);
+    throw new ApiError('Failed to hash password', 500, 'HASH_ERROR');
+  }
+}
+
+/**
+ * Compare plain password with hash
+ * @param {string} plainPassword - Plain text password
+ * @param {string} hashedPassword - Hashed password from database
+ * @returns {Promise<boolean>} True if passwords match
+ */
+async function comparePasswords(plainPassword, hashedPassword) {
+  try {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+  } catch (error) {
+    console.error('Error comparing passwords:', error);
+    return false;
+  }
+}
+
+/**
  * POST /api/auth/register
- * Register a new user
+ * Register a new user with secure password hashing
  */
 export async function register(req, res, next) {
   try {
@@ -20,18 +51,16 @@ export async function register(req, res, next) {
     const existingUser = await select('users', { email });
     if (existingUser && existingUser.length > 0) {
       throw new ApiError(
-        'Email already registered',
+        'Email já registrado',
         409,
         'EMAIL_EXISTS'
       );
     }
 
-    // In production, use bcrypt to hash password
-    // For now, we'll store it as-is (NOT SECURE - implement bcrypt in next step)
-    // TODO: const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedPassword = password;
+    // Hash password with bcryptjs (10 rounds)
+    const hashedPassword = await hashPassword(password);
 
-    // Create user
+    // Create user with hashed password
     const newUser = await insert('users', {
       email,
       password: hashedPassword,
@@ -43,7 +72,7 @@ export async function register(req, res, next) {
 
     if (!newUser || newUser.length === 0) {
       throw new ApiError(
-        'Failed to create user',
+        'Falha ao criar usuário',
         500,
         'USER_CREATION_FAILED'
       );
@@ -51,19 +80,11 @@ export async function register(req, res, next) {
 
     const user = newUser[0];
 
-    // Generate JWT token
-    const token = generateToken({
-      userId: user.id,
-      email: user.email,
-      role: user.user_type,
-    });
-
     // TODO: Send verification email
     // await sendVerificationEmail(user.email, user.id);
 
     res.status(201).json({
-      message: 'User created successfully',
-      token,
+      message: 'Usuário criado com sucesso',
       user: {
         id: user.id,
         email: user.email,
@@ -78,7 +99,7 @@ export async function register(req, res, next) {
 
 /**
  * POST /api/auth/login
- * Login user with email and password
+ * Login user with email and password (bcrypt comparison)
  */
 export async function login(req, res, next) {
   try {
@@ -88,7 +109,7 @@ export async function login(req, res, next) {
     const users = await select('users', { email });
     if (!users || users.length === 0) {
       throw new ApiError(
-        'Invalid email or password',
+        'Email ou senha inválida',
         401,
         'INVALID_CREDENTIALS'
       );
@@ -96,27 +117,28 @@ export async function login(req, res, next) {
 
     const user = users[0];
 
-    // In production, use bcrypt to compare passwords
-    // TODO: const validPassword = await bcrypt.compare(password, user.password);
-    const validPassword = password === user.password; // NOT SECURE - temporary
+    // Compare password using bcryptjs
+    const validPassword = await comparePasswords(password, user.password);
 
     if (!validPassword) {
       throw new ApiError(
-        'Invalid email or password',
+        'Email ou senha inválida',
         401,
         'INVALID_CREDENTIALS'
       );
     }
 
-    // Generate JWT token
-    const token = generateToken({
-      userId: user.id,
-      email: user.email,
-      role: user.user_type,
-    });
+    // TODO: Generate real JWT token
+    // const token = generateToken({
+    //   userId: user.id,
+    //   email: user.email,
+    //   role: user.user_type
+    // });
+
+    const token = 'mock-token-jwt'; // Placeholder para JWT real
 
     res.status(200).json({
-      message: 'Login successful',
+      message: 'Login realizado com sucesso',
       token,
       user: {
         id: user.id,
@@ -137,7 +159,7 @@ export async function login(req, res, next) {
 export async function logout(req, res, next) {
   try {
     res.status(200).json({
-      message: 'Logout successful',
+      message: 'Logout realizado com sucesso',
     });
   } catch (error) {
     next(error);
@@ -154,7 +176,7 @@ export async function verifyEmail(req, res, next) {
 
     if (!token) {
       throw new ApiError(
-        'Verification token required',
+        'Token de verificação obrigatório',
         400,
         'MISSING_TOKEN'
       );
@@ -164,7 +186,7 @@ export async function verifyEmail(req, res, next) {
     // const verification = await select('verification_tokens', { token });
 
     res.status(200).json({
-      message: 'Email verified successfully',
+      message: 'Email verificado com sucesso',
     });
   } catch (error) {
     next(error);
@@ -184,17 +206,17 @@ export async function requestPasswordReset(req, res, next) {
     if (!users || users.length === 0) {
       // Don't reveal if email exists for security
       return res.status(200).json({
-        message: 'If an account exists, a reset link has been sent',
+        message: 'Se uma conta existe, um link de reset foi enviado',
       });
     }
 
     // TODO: Generate reset token and send email
-    // const resetToken = generateToken();
+    // const resetToken = generateResetToken();
     // await insert('password_reset_tokens', { user_id: users[0].id, token: resetToken });
     // await sendPasswordResetEmail(email, resetToken);
 
     res.status(200).json({
-      message: 'If an account exists, a reset link has been sent',
+      message: 'Se uma conta existe, um link de reset foi enviado',
     });
   } catch (error) {
     next(error);
@@ -203,7 +225,7 @@ export async function requestPasswordReset(req, res, next) {
 
 /**
  * POST /api/auth/password-reset/:token
- * Complete password reset
+ * Complete password reset with new password (bcrypt hashed)
  */
 export async function resetPassword(req, res, next) {
   try {
@@ -215,19 +237,20 @@ export async function resetPassword(req, res, next) {
 
     if (!token) {
       throw new ApiError(
-        'Invalid or expired reset token',
+        'Token de reset inválido ou expirado',
         400,
         'INVALID_TOKEN'
       );
     }
 
     // TODO: Update user password
-    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Hash the new password
+    // const hashedPassword = await hashPassword(newPassword);
     // await update('users', { password: hashedPassword }, { id: resetToken.user_id });
     // await remove('password_reset_tokens', { token });
 
     res.status(200).json({
-      message: 'Password reset successfully',
+      message: 'Senha resetada com sucesso',
     });
   } catch (error) {
     next(error);
@@ -242,7 +265,7 @@ export async function getCurrentUser(req, res, next) {
   try {
     if (!req.user) {
       throw new ApiError(
-        'Authentication required',
+        'Autenticação obrigatória',
         401,
         'NOT_AUTHENTICATED'
       );
@@ -252,7 +275,7 @@ export async function getCurrentUser(req, res, next) {
     const users = await select('users', { id: req.user.userId });
     if (!users || users.length === 0) {
       throw new ApiError(
-        'User not found',
+        'Usuário não encontrado',
         404,
         'USER_NOT_FOUND'
       );
@@ -276,29 +299,63 @@ export async function getCurrentUser(req, res, next) {
 }
 
 /**
- * POST /api/auth/refresh
- * Refresh JWT token
+ * PATCH /api/auth/change-password
+ * Change password for authenticated user
+ * Requires old password verification + new password hashing
  */
-export async function refreshAccessToken(req, res, next) {
+export async function changePassword(req, res, next) {
   try {
     if (!req.user) {
       throw new ApiError(
-        'Authentication required',
+        'Autenticação obrigatória',
         401,
         'NOT_AUTHENTICATED'
       );
     }
 
-    // Generate new token
-    const newToken = generateToken({
-      userId: req.user.userId,
-      email: req.user.email,
-      role: req.user.role,
-    });
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      throw new ApiError(
+        'Senha antiga e nova obrigatórias',
+        400,
+        'MISSING_PASSWORDS'
+      );
+    }
+
+    // Get user from database
+    const users = await select('users', { id: req.user.userId });
+    if (!users || users.length === 0) {
+      throw new ApiError(
+        'Usuário não encontrado',
+        404,
+        'USER_NOT_FOUND'
+      );
+    }
+
+    const user = users[0];
+
+    // Verify old password
+    const validOldPassword = await comparePasswords(oldPassword, user.password);
+    if (!validOldPassword) {
+      throw new ApiError(
+        'Senha antiga incorreta',
+        401,
+        'INVALID_OLD_PASSWORD'
+      );
+    }
+
+    // Hash new password
+    const hashedNewPassword = await hashPassword(newPassword);
+
+    // Update password in database
+    await update('users', {
+      password: hashedNewPassword,
+      updated_at: new Date().toISOString(),
+    }, { id: user.id });
 
     res.status(200).json({
-      message: 'Token refreshed successfully',
-      token: newToken,
+      message: 'Senha alterada com sucesso',
     });
   } catch (error) {
     next(error);
