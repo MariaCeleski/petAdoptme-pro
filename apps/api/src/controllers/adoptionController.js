@@ -28,9 +28,9 @@ export async function createAdoptionRequest(req, res, next) {
 
     const pet = pets[0];
 
-    if (pet.pet_status !== 'AVAILABLE') {
+    if (pet.status !== 'AVAILABLE') {
       throw new ApiError(
-        `Pet não está disponível para adoção (status: ${pet.pet_status})`,
+        `Pet não está disponível para adoção (status: ${pet.status})`,
         400,
         'PET_NOT_AVAILABLE'
       );
@@ -150,7 +150,7 @@ export async function approveAdoption(req, res, next) {
     }, { id });
 
     await update('pets', {
-      pet_status: 'ADOPTED',
+      status: 'ADOPTED',
       updated_at: new Date().toISOString(),
     }, { id: adoption.pet_id });
 

@@ -18,7 +18,7 @@ export async function listPets(req, res, next) {
     const offset = (page - 1) * limit;
 
     // Build filter
-    const filter = { pet_status: status };
+    const filter = { status: status };
     if (species) filter.species = species;
     if (size) filter.size = size;
     if (gender) filter.gender = gender;
@@ -91,7 +91,7 @@ export async function createPet(req, res, next) {
     const newPet = await insert('pets', {
       ...petData,
       owner_id: req.user.userId,
-      pet_status: 'AVAILABLE',
+      status: 'AVAILABLE',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     });
@@ -209,7 +209,7 @@ export async function deletePet(req, res, next) {
 
     // Archive pet (soft delete)
     await update('pets', {
-      pet_status: 'ARCHIVED',
+      status: 'ARCHIVED',
       updated_at: new Date().toISOString(),
     }, { id });
 
@@ -272,7 +272,7 @@ export async function updatePetStatus(req, res, next) {
 
     // Update status
     await update('pets', {
-      pet_status: status,
+      status: status,
       updated_at: new Date().toISOString(),
     }, { id });
 

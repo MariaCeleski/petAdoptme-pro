@@ -17,6 +17,7 @@ import { optionalAuth } from './middleware/auth.js';
 import authRoutes from './routes/auth.js';
 import petRoutes from './routes/pets.js';
 import adoptionRoutes from './routes/adoptions.js';
+import uploadRoutes from './routes/upload.js';
 
 // Load environment variables
 dotenv.config();
@@ -133,6 +134,7 @@ app.get('/api/info', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/pets', petRoutes);
 app.use('/api/adoptions', adoptionRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // ============================================
 // ERROR HANDLING
