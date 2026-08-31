@@ -9,7 +9,7 @@ import GoogleProvider from 'next-auth/providers/google';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-export const authConfig = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: 'Email',
@@ -88,4 +88,7 @@ export const authConfig = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-export default authConfig;
+// Alias para compatibilidade
+export const authConfig = authOptions;
+
+export default authOptions;
