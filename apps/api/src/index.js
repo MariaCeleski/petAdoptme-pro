@@ -8,6 +8,16 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 
+// Import middleware
+import { errorHandler, asyncHandler } from './middleware/errorHandler.js';
+import { sanitizeInputs, rateLimit } from './middleware/validation.js';
+import { optionalAuth } from './middleware/auth.js';
+
+// Import routes
+import authRoutes from './routes/auth.js';
+import petRoutes from './routes/pets.js';
+import adoptionRoutes from './routes/adoptions.js';
+
 // Load environment variables
 dotenv.config();
 
@@ -42,6 +52,12 @@ if (NODE_ENV === 'development') {
   });
 }
 
+// Global sanitization
+app.use(sanitizeInputs);
+
+// Global rate limiting
+app.use(rateLimit(100, 60000)); // 100 requests per minute globally
+
 // ============================================
 // HEALTH CHECK ROUTES
 // ============================================
@@ -70,7 +86,7 @@ app.get('/api/status', (req, res) => {
       timestamp: new Date().toISOString(),
       environment: NODE_ENV,
       uptime: process.uptime(),
-      database: process.env.DATABASE_URL ? 'configured' : 'not-configured',
+      database: process.env.SUPABASE_URL ? 'configured' : 'not-configured',
       memory: {
         rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
         heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
@@ -89,7 +105,7 @@ app.get('/api/status', (req, res) => {
 });
 
 // ============================================
-// API ROUTES (PLACEHOLDER)
+// API ROUTES
 // ============================================
 
 /**
@@ -105,17 +121,18 @@ app.get('/api/info', (req, res) => {
       health: 'GET /api/health',
       status: 'GET /api/status',
       info: 'GET /api/info',
+      auth: 'POST /api/auth/*',
+      pets: 'GET/POST/PATCH/DELETE /api/pets/*',
+      adoptions: 'GET/POST/PATCH /api/adoptions/*',
     },
     documentation: '/docs',
-    status: 'development - routes coming soon',
   });
 });
 
-// TODO: Import and use route handlers
-// app.use('/api/auth', authRoutes);
-// app.use('/api/pets', petRoutes);
-// app.use('/api/adoptions', adoptionRoutes);
-// app.use('/api/upload', uploadRoutes);
+// Mount route handlers
+app.use('/api/auth', authRoutes);
+app.use('/api/pets', petRoutes);
+app.use('/api/adoptions', adoptionRoutes);
 
 // ============================================
 // ERROR HANDLING
@@ -135,22 +152,9 @@ app.use((req, res) => {
 });
 
 /**
- * Global error handler
+ * Global error handler (must be last)
  */
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-
-  const status = err.status || 500;
-  const message = err.message || 'Internal Server Error';
-  const code = err.code || 'INTERNAL_ERROR';
-
-  res.status(status).json({
-    error: message,
-    code,
-    timestamp: new Date().toISOString(),
-    ...(NODE_ENV === 'development' && { stack: err.stack }),
-  });
-});
+app.use(errorHandler);
 
 // ============================================
 // SERVER STARTUP
@@ -163,10 +167,10 @@ async function startServer() {
   try {
     console.log('🚀 Starting PetAdopt API Server...');
     
-    if (process.env.DATABASE_URL) {
-      console.log('✅ Database URL configured');
+    if (process.env.SUPABASE_URL) {
+      console.log('✅ Supabase configured');
     } else {
-      console.log('⚠️  DATABASE_URL not set - running in development mode without database');
+      console.log('⚠️  SUPABASE_URL not set - running without database');
     }
 
     // Start server
@@ -181,10 +185,13 @@ async function startServer() {
 ╚════════════════════════════════════════╝
       `);
       console.log(`📡 Server running at http://localhost:${PORT}`);
-      console.log(`🔍 Health check: curl http://localhost:${PORT}/api/health`);
+      console.log(`🔍 Health: curl http://localhost:${PORT}/api/health`);
       console.log(`📊 Status: curl http://localhost:${PORT}/api/status`);
       console.log(`ℹ️  Info: curl http://localhost:${PORT}/api/info`);
-      console.log(`\n📖 Docs: Check ./docs for API documentation\n`);
+      console.log(`\n📖 Routes mounted:`);
+      console.log(`   - /api/auth     → Authentication`);
+      console.log(`   - /api/pets     → Pet management`);
+      console.log(`   - /api/adoptions → Adoption requests\n`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
