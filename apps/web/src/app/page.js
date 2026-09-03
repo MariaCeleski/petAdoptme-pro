@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Layout from '@/components/common/Layout';
 import Button from '@/components/ui/Button';
 import SponsorsCarousel from '@/components/common/SponsorsCarousel/SponsorsCarousel';
@@ -24,12 +25,33 @@ export default function HomePage() {
               </p>
               
               <div className={styles.buttonContainer}>
-                <Button size="large" variant="success" href="/pets" as="link">
-                  🐕 Adotar um Pet
-                </Button>
-                <Button size="large" variant="outline" href="/tutores/cadastrar" as="link">
-                  💝 Cadastrar Pet
-                </Button>
+                <Link href="/pets">
+                  <Button size="large" variant="success" as="span">
+                    🐕 Adotar um Pet
+                  </Button>
+                </Link>
+                <Link href="/tutores/cadastrar">
+                  <Button size="large" variant="outline" as="span">
+                    💝 Cadastrar Pet
+                  </Button>
+                </Link>
+              </div>
+
+              {/* CTA para não logados */}
+              <div className={styles.authButtonsContainer}>
+                <p className={styles.authText}>Ainda não tem conta?</p>
+                <div className={styles.authButtons}>
+                  <Link href="/auth/signin">
+                    <Button size="medium" variant="ghost">
+                      🔐 Entrar
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup">
+                    <Button size="medium" variant="primary">
+                      ✨ Cadastrar Grátis
+                    </Button>
+                  </Link>
+                </div>
               </div>
               
               {/* Estatísticas */}
@@ -72,9 +94,11 @@ export default function HomePage() {
             </div>
             
             <div style={{ textAlign: 'center' }}>
-              <Button size="large" variant="primary">
-                Ver Todos os Pets Disponíveis
-              </Button>
+              <Link href="/pets">
+                <Button size="large" variant="primary">
+                  Ver Todos os Pets Disponíveis
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -92,9 +116,11 @@ export default function HomePage() {
               O processo de adoção é simples, seguro e pensado no bem-estar dos animais. 
               Cadastre-se e comece sua jornada como tutor responsável hoje mesmo.
             </p>
-            <Button size="large" variant="outline">
-              Começar Processo de Adoção
-            </Button>
+            <Link href="/auth/signup">
+              <Button size="large" variant="primary">
+                Começar Processo de Adoção
+              </Button>
+            </Link>
           </div>
         </section>
       </div>
@@ -125,9 +151,11 @@ function PetCard({ pet }) {
           <span className={`${styles.petGender} ${styles[genderClass]}`}>
             {pet.gender}
           </span>
-          <Button size="small" variant="outline">
-            Ver Detalhes
-          </Button>
+          <Link href="/pets">
+            <Button size="small" variant="outline" as="span">
+              Ver Detalhes
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

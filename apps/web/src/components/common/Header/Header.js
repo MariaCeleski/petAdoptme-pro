@@ -84,21 +84,23 @@ export default function Header({
           <div className={styles.actions}>
             {!session?.user ? (
               <>
-                <Button 
-                  variant="ghost" 
-                  size="medium" 
-                  className={styles.loginBtn}
-                  onClick={() => router.push('/auth/signin')}
-                >
-                  Entrar
-                </Button>
-                <Button 
-                  variant="primary" 
-                  size="medium"
-                  onClick={() => router.push('/auth/signup')}
-                >
-                  Cadastrar
-                </Button>
+                <Link href="/auth/signin">
+                  <Button 
+                    variant="ghost" 
+                    size="medium" 
+                    className={styles.loginBtn}
+                  >
+                    Entrar
+                  </Button>
+                </Link>
+                <Link href="/auth/signup">
+                  <Button 
+                    variant="primary" 
+                    size="medium"
+                  >
+                    Cadastrar
+                  </Button>
+                </Link>
               </>
             ) : (
               <div className={styles.userArea}>
@@ -181,12 +183,16 @@ export default function Header({
               📞 Contato
             </Link>
             <div className={styles.mobileActions}>
-              <Button variant="outline" fullWidth className="mb-sm">
-                Entrar
-              </Button>
-              <Button variant="primary" fullWidth>
-                Cadastrar
-              </Button>
+              <Link href="/auth/signin">
+                <Button variant="outline" fullWidth className="mb-sm">
+                  Entrar
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button variant="primary" fullWidth>
+                  Cadastrar
+                </Button>
+              </Link>
             </div>
           </nav>
         </div>

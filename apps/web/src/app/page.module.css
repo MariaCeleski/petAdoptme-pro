@@ -318,3 +318,56 @@
     font-size: 2rem;
   }
 }
+
+/* Auth Buttons - Hero Section */
+.authButtonsContainer {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.authText {
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.authButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .authButtons {
+    flex-direction: row;
+  }
+}
+
+.authButtons a {
+  display: inline-block;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .authButtons a {
+    width: auto;
+  }
+}
+
+/* Ghost button in hero (for signin) */
+.heroContent :global(.button.ghost) {
+  background: transparent;
+  color: var(--neutral-white);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.heroContent :global(.button.ghost:hover:not(:disabled)) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--neutral-white);
+}
+
