@@ -2,33 +2,20 @@
  * Authentication Controller - FASE 5.4 Email Integration
  */
 
-import bcrypt from 'bcryptjs';
 import { ApiError } from '../middleware/errorHandler.js';
 import { insert, select, update } from '../services/supabaseClient.js';
+import { generateToken } from '../middleware/auth.js';
 import { userLoginSchema, userRegisterSchema, passwordResetSchema } from '@petadopt/shared';
+import {
+  hashPassword,
+  verifyPassword,
+  validatePasswordStrength,
+  validateEmail,
+} from '../services/authService.js';
 import {
   sendVerificationEmail,
   sendPasswordResetEmail,
 } from '../services/emailService.js';
-
-async function hashPassword(password) {
-  try {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt);
-  } catch (error) {
-    console.error('Error hashing password:', error);
-    throw new ApiError('Failed to hash password', 500, 'HASH_ERROR');
-  }
-}
-
-async function comparePasswords(plainPassword, hashedPassword) {
-  try {
-    return await bcrypt.compare(plainPassword, hashedPassword);
-  } catch (error) {
-    console.error('Error comparing passwords:', error);
-    return false;
-  }
-}
 
 function generateVerificationToken(userId) {
   return `verify_${userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -36,21 +23,46 @@ function generateVerificationToken(userId) {
 
 export async function register(req, res, next) {
   try {
-    const { email, password, name, userType } = await userRegisterSchema.parseAsync(req.body);
+    // Validate request body against schema
+    const { email, password, name, type } = await userRegisterSchema.parseAsync(req.body);
 
+    // Validate email format
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      return res.status(400).json({
+        error: 'Email validation failed',
+        code: 'INVALID_EMAIL',
+        errors: emailValidation.errors,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Validate password strength
+    const passwordValidation = validatePasswordStrength(password);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        error: 'Password validation failed',
+        code: 'INVALID_PASSWORD',
+        errors: passwordValidation.errors,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Check if email already exists
     const existingUser = await select('users', { email });
     if (existingUser && existingUser.length > 0) {
       throw new ApiError('Email já registrado', 409, 'EMAIL_EXISTS');
     }
 
+    // Hash password using backend utility
     const hashedPassword = await hashPassword(password);
 
+    // Create user in database (let Supabase generate the ID)
     const newUser = await insert('users', {
       email,
       password: hashedPassword,
       name,
-      user_type: userType,
-      email_verified: false,
+      type,
       created_at: new Date().toISOString(),
     });
 
@@ -60,10 +72,11 @@ export async function register(req, res, next) {
 
     const user = newUser[0];
 
+    // Send verification email
     try {
       const verificationToken = generateVerificationToken(user.id);
-      
-      await insert('verification_tokens', {
+
+      await insert('email_verification_tokens', {
         user_id: user.id,
         token: verificationToken,
         expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
@@ -75,14 +88,14 @@ export async function register(req, res, next) {
       console.warn('⚠️ Failed to send verification email:', emailError);
     }
 
+    // Return user data WITHOUT password hash
     res.status(201).json({
       message: 'Usuário criado com sucesso. Verifique seu email para ativar sua conta.',
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
-        userType: user.user_type,
-        emailVerified: user.email_verified,
+        userType: user.type,
       },
     });
   } catch (error) {
@@ -100,14 +113,19 @@ export async function login(req, res, next) {
     }
 
     const user = users[0];
-    const validPassword = await comparePasswords(password, user.password);
+    const validPassword = await verifyPassword(password, user.password);
 
     if (!validPassword) {
       throw new ApiError('Email ou senha inválida', 401, 'INVALID_CREDENTIALS');
     }
 
-    const token = 'mock-token-jwt';
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      userType: user.type,
+    });
 
+    // Return user data WITHOUT password hash
     res.status(200).json({
       message: 'Login realizado com sucesso',
       token,
@@ -115,7 +133,7 @@ export async function login(req, res, next) {
         id: user.id,
         email: user.email,
         name: user.name,
-        userType: user.user_type,
+        userType: user.type,
       },
     });
   } catch (error) {
@@ -141,7 +159,7 @@ export async function verifyEmail(req, res, next) {
       throw new ApiError('Token e ID de usuário obrigatórios', 400, 'MISSING_PARAMS');
     }
 
-    const verificationTokens = await select('verification_tokens', {
+    const verificationTokens = await select('email_verification_tokens', {
       token,
       user_id: userId,
     });
@@ -157,7 +175,6 @@ export async function verifyEmail(req, res, next) {
     }
 
     await update('users', {
-      email_verified: true,
       updated_at: new Date().toISOString(),
     }, { id: userId });
 
@@ -214,6 +231,17 @@ export async function resetPassword(req, res, next) {
       throw new ApiError('Token de reset obrigatório', 400, 'MISSING_TOKEN');
     }
 
+    // Validate password strength before processing
+    const passwordValidation = validatePasswordStrength(newPassword);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        error: 'Password validation failed',
+        code: 'INVALID_PASSWORD',
+        errors: passwordValidation.errors,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     const resetTokens = await select('password_reset_tokens', { token });
 
     if (!resetTokens || resetTokens.length === 0) {
@@ -254,14 +282,13 @@ export async function getCurrentUser(req, res, next) {
 
     const user = users[0];
 
+    // Return user data WITHOUT password hash
     res.status(200).json({
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
-        userType: user.user_type,
-        emailVerified: user.email_verified,
-        createdAt: user.created_at,
+        userType: user.type,
       },
     });
   } catch (error) {
@@ -288,7 +315,7 @@ export async function changePassword(req, res, next) {
 
     const user = users[0];
 
-    const validOldPassword = await comparePasswords(oldPassword, user.password);
+    const validOldPassword = await verifyPassword(oldPassword, user.password);
     if (!validOldPassword) {
       throw new ApiError('Senha antiga incorreta', 401, 'INVALID_OLD_PASSWORD');
     }

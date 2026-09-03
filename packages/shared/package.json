@@ -10,7 +10,7 @@
     "./validation": "./src/validation/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "echo 'No build needed for JS package'",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },

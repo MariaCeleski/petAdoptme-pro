@@ -1,29 +1,18 @@
-import bcrypt from 'bcryptjs';
-
 /**
- * Hash uma senha usando bcrypt
- * @param {string} password - Senha em texto plano
- * @returns {Promise<string>} - Senha hasheada
- */
-export async function hashPassword(password) {
-  const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS ?? '12');
-  return bcrypt.hash(password, saltRounds);
-}
-
-/**
- * Verifica se uma senha corresponde ao hash
- * @param {string} password - Senha em texto plano
- * @param {string} hashedPassword - Senha hasheada
- * @returns {Promise<boolean>} - True se as senhas correspondem
- */
-export async function verifyPassword(password, hashedPassword) {
-  return bcrypt.compare(password, hashedPassword);
-}
-
-/**
- * Valida a força da senha
- * @param {string} password - Senha para validar
- * @returns {Object} - Objeto com resultado da validação
+ * Validates password strength for immediate UX feedback only.
+ * 
+ * IMPORTANT: This function is for client-side UX feedback only, NOT for security validation.
+ * The server WILL re-validate all passwords for security before accepting them.
+ * Never rely on this function for security decisions.
+ * 
+ * This is a pure function with no async operations or external dependencies.
+ * It provides immediate feedback without network calls.
+ * 
+ * @param {string} password - Password to validate
+ * @returns {Object} Plain object with validation result
+ * @returns {boolean} result.isValid - Whether password meets UX requirements
+ * @returns {string[]} result.errors - Array of validation error messages
+ * @returns {number} result.strength - Password strength score (0-4)
  */
 export function validatePasswordStrength(password) {
   const errors = [];
@@ -76,9 +65,19 @@ function calculatePasswordStrength(password) {
 }
 
 /**
- * Valida formato de email
- * @param {string} email - Email para validar
- * @returns {Object} - Objeto com resultado da validação
+ * Validates email format for immediate UX feedback only.
+ * 
+ * IMPORTANT: This function is for client-side UX feedback only, NOT for security validation.
+ * The server WILL re-validate all emails for security before accepting them.
+ * Never rely on this function for security decisions.
+ * 
+ * This is a pure function with no async operations or external dependencies.
+ * It provides immediate feedback without network calls.
+ * 
+ * @param {string} email - Email to validate
+ * @returns {Object} Plain object with validation result
+ * @returns {boolean} result.isValid - Whether email meets UX format requirements
+ * @returns {string[]} result.errors - Array of validation error messages
  */
 export function validateEmail(email) {
   const errors = [];
@@ -104,17 +103,13 @@ export function validateEmail(email) {
 }
 
 /**
- * Gera um token seguro para verificação de email
- * @returns {string} - Token aleatório
- */
-export function generateVerificationToken() {
-  return crypto.randomUUID();
-}
-
-/**
- * Verifica se uma string é um CUID válido
- * @param {string} id - ID para verificar
- * @returns {boolean} - True se é um CUID válido
+ * Checks if a string is a valid CUID.
+ * 
+ * Pure function with no async operations or external dependencies.
+ * Used for client-side validation of CUID format.
+ * 
+ * @param {string} id - ID to check
+ * @returns {boolean} True if valid CUID format
  */
 export function isValidCUID(id) {
   const cuidRegex = /^c[a-z0-9]{24}$/;

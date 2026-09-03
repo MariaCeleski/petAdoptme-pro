@@ -7,6 +7,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Import middleware
 import { errorHandler, asyncHandler } from './middleware/errorHandler.js';
@@ -18,9 +20,14 @@ import authRoutes from './routes/auth.js';
 import petRoutes from './routes/pets.js';
 import adoptionRoutes from './routes/adoptions.js';
 import uploadRoutes from './routes/upload.js';
+import adminPetRoutes from './routes/admin/pets.js';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from .env.local or .env (try .env.local first)
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envPathLocal = path.join(__dirname, '../.env.local');
+const envPathDefault = path.join(__dirname, '../.env');
+dotenv.config({ path: envPathLocal });
+dotenv.config({ path: envPathDefault });
 
 // Initialize Express app
 const app = express();
@@ -125,6 +132,7 @@ app.get('/api/info', (req, res) => {
       auth: 'POST /api/auth/*',
       pets: 'GET/POST/PATCH/DELETE /api/pets/*',
       adoptions: 'GET/POST/PATCH /api/adoptions/*',
+      admin: 'GET/PATCH /api/admin/pets/*',
     },
     documentation: '/docs',
   });
@@ -135,6 +143,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/pets', petRoutes);
 app.use('/api/adoptions', adoptionRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/admin/pets', adminPetRoutes);
 
 // ============================================
 // ERROR HANDLING
@@ -175,6 +184,12 @@ async function startServer() {
       console.log('⚠️  SUPABASE_URL not set - running without database');
     }
 
+    if (process.env.CLOUDINARY_CLOUD_NAME) {
+      console.log('✅ Cloudinary configured');
+    } else {
+      console.log('⚠️  CLOUDINARY credentials not set - photo upload disabled');
+    }
+
     // Start server
     app.listen(PORT, () => {
       console.log(`
@@ -191,9 +206,10 @@ async function startServer() {
       console.log(`📊 Status: curl http://localhost:${PORT}/api/status`);
       console.log(`ℹ️  Info: curl http://localhost:${PORT}/api/info`);
       console.log(`\n📖 Routes mounted:`);
-      console.log(`   - /api/auth     → Authentication`);
-      console.log(`   - /api/pets     → Pet management`);
-      console.log(`   - /api/adoptions → Adoption requests\n`);
+      console.log(`   - /api/auth       → Authentication`);
+      console.log(`   - /api/pets       → Pet management (with photo upload)`);
+      console.log(`   - /api/adoptions  → Adoption requests`);
+      console.log(`   - /api/admin/pets → Admin approval/rejection\n`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

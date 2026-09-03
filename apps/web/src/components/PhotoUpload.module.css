@@ -1,0 +1,223 @@
+.photoUploadContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Drop Zone */
+.dropZone {
+  border: 2px dashed #3498db;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f0f8ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.dropZone:hover {
+  border-color: #2980b9;
+  background-color: #e8f4f8;
+}
+
+.dropZone.dragging {
+  border-color: #27ae60;
+  background-color: #e8f8f0;
+  transform: scale(1.02);
+}
+
+.dropZone.maxReached {
+  border-color: #bdc3c7;
+  background-color: #ecf0f1;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.dropZone.maxReached:hover {
+  border-color: #bdc3c7;
+  background-color: #ecf0f1;
+  transform: none;
+}
+
+.dropZoneIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.dropZoneText {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.dropZoneSubtext {
+  font-size: 0.875rem;
+  color: #7f8c8d;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* Error Message */
+.errorMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #fadbd8;
+  border-left: 4px solid #e74c3c;
+}
+
+.errorIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.errorText {
+  font-size: 0.875rem;
+  color: #c0392b;
+  line-height: 1.5;
+}
+
+/* Preview Section */
+.previewSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.previewTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+}
+
+.previewItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ecf0f1;
+  transition: all 0.3s ease;
+}
+
+.previewItem:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.previewImage {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.previewInfo {
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.previewName {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #2c3e50;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.previewSize {
+  font-size: 0.65rem;
+  color: #7f8c8d;
+}
+
+.removeButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(231, 76, 60, 0.9);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.previewItem:hover .removeButton {
+  opacity: 1;
+}
+
+.removeButton:hover {
+  background-color: #c0392b;
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dropZone {
+    padding: 1.5rem 1rem;
+  }
+
+  .dropZoneIcon {
+    font-size: 2rem;
+  }
+
+  .dropZoneText {
+    font-size: 0.9rem;
+  }
+
+  .previewGrid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dropZone {
+    padding: 1rem;
+  }
+
+  .dropZoneIcon {
+    font-size: 1.75rem;
+  }
+
+  .dropZoneText {
+    font-size: 0.875rem;
+  }
+
+  .dropZoneSubtext {
+    font-size: 0.75rem;
+  }
+
+  .previewGrid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 0.5rem;
+  }
+}

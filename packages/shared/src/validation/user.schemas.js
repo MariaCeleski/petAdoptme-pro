@@ -13,21 +13,21 @@ export const loginSchema = z.object({
   password: z.string('Senha é obrigatória'),
 });
 
-// Register schema
+// Register schema - Backend only needs email, password, name, type
+// confirmPassword validation is done on frontend and not needed here
 export const registerSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  confirmPassword: z.string('Confirmação de senha é obrigatória'),
   name: nameSchema,
   type: userTypeSchema.default('ADOPTER'),
-}).refine(data => data.password === data.confirmPassword, {
-  message: 'Senhas não correspondem',
-  path: ['confirmPassword'],
 });
 
 // Password reset schema
 export const passwordResetSchema = z.object({
-  email: emailSchema,
+  newPassword: passwordSchema.optional(),
+  password: passwordSchema.optional(),
+}).refine(data => data.password || data.newPassword, {
+  message: 'Nova senha é obrigatória',
 });
 
 // New password schema

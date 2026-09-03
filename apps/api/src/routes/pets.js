@@ -2,11 +2,12 @@
  * Pet Routes
  * GET /api/pets - List all pets
  * GET /api/pets/:id - Get pet by ID
- * POST /api/pets - Create pet
+ * POST /api/pets - Create pet (with photo upload)
  * PATCH /api/pets/:id - Update pet
  * DELETE /api/pets/:id - Delete/archive pet
  * PATCH /api/pets/:id/status - Update pet status
  * GET /api/pets/owner/:ownerId - Get pets by owner
+ * POST /api/pets/:id/pet-compatibility - Save compatibility info
  */
 
 import { Router } from 'express';
@@ -14,6 +15,7 @@ import * as petController from '../controllers/petController.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { sanitizeInputs, rateLimit } from '../middleware/validation.js';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
+import upload from '../middleware/upload.middleware.js';
 
 const router = Router();
 
@@ -37,17 +39,18 @@ router.get('/:id', optionalAuth, asyncHandler(petController.getPetById));
 
 /**
  * POST /api/pets
- * Create a new pet
- * Requires authentication
+ * Create a new pet with photo upload
+ * Requires authentication (INDIVIDUAL_OWNER or SHELTER_ADMIN)
+ * Accepts FormData multipart with up to 5 photos
  */
-router.post('/', requireAuth, asyncHandler(petController.createPet));
+router.post('/', requireAuth, upload.array('photos', 5), asyncHandler(petController.createPet));
 
 /**
  * PATCH /api/pets/:id
- * Update a pet
+ * Update a pet with optional photo update
  * Requires authentication (owner)
  */
-router.patch('/:id', requireAuth, asyncHandler(petController.updatePet));
+router.patch('/:id', requireAuth, upload.array('photos', 5), asyncHandler(petController.updatePet));
 
 /**
  * DELETE /api/pets/:id
@@ -68,5 +71,19 @@ router.patch('/:id/status', requireAuth, asyncHandler(petController.updatePetSta
  * Get all pets owned by a user
  */
 router.get('/owner/:ownerId', optionalAuth, asyncHandler(petController.getPetsByOwner));
+
+/**
+ * POST /api/pets/:id/pet-compatibility
+ * Save or update pet compatibility information
+ * Requires authentication (owner)
+ */
+router.post('/:id/pet-compatibility', requireAuth, asyncHandler(petController.savePetCompatibility));
+
+/**
+ * DELETE /api/pets/:id/pet-compatibility
+ * Delete pet compatibility information
+ * Requires authentication (owner)
+ */
+router.delete('/:id/pet-compatibility', requireAuth, asyncHandler(petController.deletePetCompatibility));
 
 export default router;
