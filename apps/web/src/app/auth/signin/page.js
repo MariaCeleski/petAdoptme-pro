@@ -1,5 +1,3 @@
-'use client';
-
 import SignInForm from '@/components/auth/SignInForm';
 import styles from './signin.module.css';
 
@@ -11,7 +9,6 @@ export const metadata = {
 export default function SignInPage() {
   return (
     <div className={styles.container}>
-      {/* Floating circles for decoration */}
       <div className={styles.card}>
         <div className={styles.header}>
           <span className={styles.logo}>🔐</span>
