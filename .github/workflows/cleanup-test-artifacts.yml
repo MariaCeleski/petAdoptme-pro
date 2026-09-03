@@ -1,0 +1,25 @@
+name: Clean Up Test Artifacts
+
+on:
+  push:
+    branches: [main, develop]
+  schedule:
+    # Run weekly on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Remove test artifacts
+        run: |
+          rm -rf apps/web/test-results/
+          rm -rf apps/web/playwright-report/
+          echo "✅ Test artifacts cleaned up"
+      
+      - name: Verify cleanup
+        run: |
+          echo "Remaining directories in apps/web:"
+          ls -la apps/web/ | grep -E "test|report" || echo "No test artifacts found"
