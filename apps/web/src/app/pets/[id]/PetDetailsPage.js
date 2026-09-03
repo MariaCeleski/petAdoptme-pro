@@ -1,324 +1,326 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { PetGallery, PetInfo, OwnerInfo, SuccessStories } from '@/components/pets';
-import { Button, Card, Badge, LoadingSkeleton } from '@/components/ui';
-import { 
-  ArrowLeftIcon,
-  HeartIcon,
-  ShareIcon,
-  MapPinIcon,
-  CalendarIcon,
-  UserIcon,
-  PawPrintIcon
-} from 'lucide-react';
+import { useState } from 'react';
+import Link from 'next/link';
 import styles from './PetDetailsPage.module.css';
-import { clsx } from 'clsx';
 
 /**
- * PetDetailsPage Client Component
- * Detailed pet information with gallery, owner info, and interest button
- * Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7
+ * Pet Details Page - Renders complete pet information from registration form
+ * Displays photos, characteristics, health info, personality, and owner contact
  */
 export function PetDetailsPage({ pet }) {
-  const router = useRouter();
-  const { data: session } = useSession();
-  
-  // State for interactions
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isInterested, setIsInterested] = useState(false);
-  const [showInterestModal, setShowInterestModal] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [showContactForm, setShowContactForm] = useState(false);
 
-  // Check if user can express interest
-  const canExpressInterest = pet.status === 'APPROVED' && 
-                           session && 
-                           session.user.id !== pet.owner.id;
+  if (!pet) {
+    return (
+      <div className={styles.notFound}>
+        <div className={styles.notFoundContent}>
+          <div className={styles.notFoundEmoji}>🐾</div>
+          <h1>Pet não encontrado</h1>
+          <p>O pet que você está procurando pode ter sido adotado, removido da plataforma ou o link pode estar incorreto.</p>
+          <Link href="/pets" className={styles.backLink}>
+            ← Ver todos os pets disponíveis
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-  /**
-   * Handle back navigation
-   */
-  const handleGoBack = useCallback(() => {
-    router.back();
-  }, [router]);
+  // Extract photo URLs from the photos array
+  const photos = pet.photos && Array.isArray(pet.photos) && pet.photos.length > 0 
+    ? pet.photos.map(p => typeof p === 'string' ? p : p.url).filter(Boolean)
+    : [];
 
-  /**
-   * Handle share functionality
-   */
-  const handleShare = useCallback(async () => {
-    const shareData = {
-      title: `${pet.name} - ${pet.breed} para Adoção`,
-      text: `Conheça ${pet.name}, um ${pet.breed} incrível disponível para adoção!`,
-      url: window.location.href
-    };
+  const currentPhoto = photos[currentPhotoIndex] || '/images/pet-placeholder.jpg';
 
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.log('Share cancelled or failed:', err);
-      }
-    } else {
-      // Fallback: copy to clipboard
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        // TODO: Show toast notification
-        alert('Link copiado para a área de transferência!');
-      } catch (err) {
-        console.error('Failed to copy to clipboard:', err);
-        prompt('Copie este link:', window.location.href);
-      }
-    }
-  }, [pet.name, pet.breed]);
-
-  /**
-   * Handle favorite toggle
-   */
-  const handleFavoriteToggle = useCallback(() => {
-    if (!session) {
-      router.push('/auth/login');
-      return;
-    }
-
-    setIsFavorite(!isFavorite);
-    // TODO: Call API to persist favorite
-  }, [session, router, isFavorite]);
-
-  /**
-   * Handle express interest
-   * Requirements: 5.5, 5.6
-   */
-  const handleExpressInterest = useCallback(() => {
-    if (!session) {
-      router.push('/auth/login');
-      return;
-    }
-
-    if (pet.status !== 'APPROVED') {
-      alert('Este pet não está mais disponível para adoção.');
-      return;
-    }
-
-    // Navigate to adoption form
-    router.push(`/adopt/${pet.id}`);
-  }, [session, router, pet.id, pet.status]);
-
-  /**
-   * Get status badge variant
-   */
-  const getStatusBadgeVariant = (status) => {
-    switch (status) {
-      case 'APPROVED':
-        return 'success';
-      case 'PENDING':
-        return 'warning';
-      case 'ADOPTED':
-        return 'info';
-      case 'UNAVAILABLE':
-        return 'secondary';
-      default:
-        return 'secondary';
-    }
+  // Navigation functions
+  const goToPreviousPhoto = () => {
+    setCurrentPhotoIndex((prev) => prev === 0 ? photos.length - 1 : prev - 1);
   };
 
-  /**
-   * Get status label
-   */
-  const getStatusLabel = (status) => {
-    switch (status) {
-      case 'APPROVED':
-        return 'Disponível';
-      case 'PENDING':
-        return 'Adoção em Andamento';
-      case 'ADOPTED':
-        return 'Adotado';
-      case 'UNAVAILABLE':
-        return 'Indisponível';
-      default:
-        return status;
-    }
+  const goToNextPhoto = () => {
+    setCurrentPhotoIndex((prev) => prev === photos.length - 1 ? 0 : prev + 1);
+  };
+
+  // Get gender label
+  const getGenderLabel = () => {
+    const genderMap = {
+      'M': 'Macho',
+      'F': 'Fêmea',
+      'MALE': 'Macho',
+      'FEMALE': 'Fêmea',
+      'male': 'Macho',
+      'female': 'Fêmea'
+    };
+    return genderMap[pet.gender] || pet.gender;
+  };
+
+  // Get size label
+  const getSizeLabel = () => {
+    const sizeMap = {
+      'SMALL': 'Pequeno',
+      'MEDIUM': 'Médio',
+      'LARGE': 'Grande',
+      'XLARGE': 'Extra Grande',
+      'small': 'Pequeno',
+      'medium': 'Médio',
+      'large': 'Grande',
+      'xlarge': 'Extra Grande'
+    };
+    return sizeMap[pet.size] || pet.size;
   };
 
   return (
     <div className={styles.petDetailsPage}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.headerContent}>
-          <Button
-            variant="ghost"
-            onClick={handleGoBack}
-            className={styles.backButton}
-          >
-            <ArrowLeftIcon size={20} />
-            <span className="hidden sm:inline">Voltar</span>
-          </Button>
-
-          <div className={styles.headerActions}>
-            <Button
-              variant="ghost"
-              onClick={handleFavoriteToggle}
-              className={clsx(styles.favoriteButton, {
-                [styles.active]: isFavorite
-              })}
-            >
-              <HeartIcon size={20} fill={isFavorite ? 'currentColor' : 'none'} />
-            </Button>
-
-            <Button
-              variant="ghost"
-              onClick={handleShare}
-              className={styles.shareButton}
-            >
-              <ShareIcon size={20} />
-            </Button>
-          </div>
+      {/* Hero Section with Photo Gallery */}
+      <div className={styles.photoGallerySection}>
+        <div className={styles.mainPhotoContainer}>
+          <img
+            src={currentPhoto}
+            alt={`${pet.name} - Foto ${currentPhotoIndex + 1}`}
+            className={styles.mainPhoto}
+          />
+          
+          {photos.length > 1 && (
+            <>
+              <button 
+                className={styles.photoNavButton} 
+                onClick={goToPreviousPhoto}
+                aria-label="Foto anterior"
+              >
+                ‹
+              </button>
+              <button 
+                className={`${styles.photoNavButton} ${styles.next}`}
+                onClick={goToNextPhoto}
+                aria-label="Próxima foto"
+              >
+                ›
+              </button>
+            </>
+          )}
+          
+          {photos.length > 1 && (
+            <div className={styles.photoCounter}>
+              {currentPhotoIndex + 1} / {photos.length}
+            </div>
+          )}
         </div>
+
+        {/* Thumbnail Gallery */}
+        {photos.length > 1 && (
+          <div className={styles.thumbnailGallery}>
+            {photos.map((photo, index) => (
+              <button
+                key={index}
+                className={`${styles.thumbnail} ${index === currentPhotoIndex ? styles.active : ''}`}
+                onClick={() => setCurrentPhotoIndex(index)}
+                aria-label={`Ver foto ${index + 1}`}
+              >
+                <img src={photo} alt={`Miniatura ${index + 1}`} />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
       <div className={styles.mainContent}>
-        <div className={styles.contentGrid}>
-          
-          {/* Left Column - Gallery */}
-          <div className={styles.gallerySection}>
-            <PetGallery
-              images={pet.images || []}
-              petName={pet.name}
-              className={styles.petGallery}
-            />
-          </div>
-
-          {/* Right Column - Pet Info */}
-          <div className={styles.infoSection}>
-            {/* Pet Basic Info */}
-            <Card className={styles.basicInfoCard}>
-              <Card.Body>
-                <div className={styles.petHeader}>
-                  <div className={styles.petTitle}>
-                    <h1 className={styles.petName}>{pet.name}</h1>
-                    <Badge 
-                      variant={getStatusBadgeVariant(pet.status)}
-                      className={styles.statusBadge}
-                    >
-                      {getStatusLabel(pet.status)}
-                    </Badge>
-                  </div>
-                  
-                  <div className={styles.petSubtitle}>
-                    <span className={styles.breed}>{pet.breed}</span>
-                    <span className={styles.separator}>•</span>
-                    <span className={styles.species}>
-                      {pet.species === 'DOG' ? 'Cachorro' : 'Gato'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Quick Info */}
-                <div className={styles.quickInfo}>
-                  <div className={styles.infoItem}>
-                    <CalendarIcon size={16} className={styles.infoIcon} />
-                    <span>{pet.age} {pet.age === 1 ? 'ano' : 'anos'}</span>
-                  </div>
-                  
-                  <div className={styles.infoItem}>
-                    <PawPrintIcon size={16} className={styles.infoIcon} />
-                    <span>{pet.gender === 'MALE' ? 'Macho' : 'Fêmea'}</span>
-                  </div>
-                  
-                  <div className={styles.infoItem}>
-                    <UserIcon size={16} className={styles.infoIcon} />
-                    <span>Porte {pet.size.toLowerCase()}</span>
-                  </div>
-                  
-                  {pet.location && (
-                    <div className={styles.infoItem}>
-                      <MapPinIcon size={16} className={styles.infoIcon} />
-                      <span>{pet.location}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Interest Button */}
-                {canExpressInterest && (
-                  <Button
-                    variant="primary"
-                    size="large"
-                    onClick={handleExpressInterest}
-                    className={styles.interestButton}
-                  >
-                    <HeartIcon size={20} />
-                    Manifestar Interesse
-                  </Button>
-                )}
-
-                {pet.status !== 'APPROVED' && (
-                  <div className={styles.unavailableMessage}>
-                    {pet.status === 'ADOPTED' && (
-                      <p>🎉 Este pet já foi adotado! Que tal conhecer outros pets disponíveis?</p>
-                    )}
-                    {pet.status === 'PENDING' && (
-                      <p>⏳ Este pet tem um processo de adoção em andamento.</p>
-                    )}
-                    {pet.status === 'UNAVAILABLE' && (
-                      <p>😔 Este pet não está disponível para adoção no momento.</p>
-                    )}
-                  </div>
-                )}
-
-                {!session && pet.status === 'APPROVED' && (
-                  <div className={styles.loginMessage}>
-                    <p>Para manifestar interesse, você precisa estar logado.</p>
-                    <Button
-                      variant="outline"
-                      onClick={() => router.push('/auth/login')}
-                      className={styles.loginButton}
-                    >
-                      Fazer Login
-                    </Button>
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-
-            {/* Detailed Pet Information */}
-            <PetInfo pet={pet} />
-
-            {/* Owner/Shelter Information */}
-            <OwnerInfo 
-              owner={pet.owner} 
-              shelter={pet.shelter}
-            />
-          </div>
-        </div>
-
-        {/* Success Stories Section */}
-        {pet.successStories && pet.successStories.length > 0 && (
-          <div className={styles.successStoriesSection}>
-            <SuccessStories 
-              stories={pet.successStories}
-              ownerName={pet.owner.name}
-            />
-          </div>
-        )}
-
-        {/* Related Pets Section */}
-        <div className={styles.relatedPetsSection}>
-          <Card>
-            <Card.Body>
-              <h3 className={styles.sectionTitle}>
-                Outros pets de {pet.owner.name}
-              </h3>
-              <p className={styles.sectionSubtitle}>
-                Conheça outros pets disponíveis do mesmo proprietário
-              </p>
-              {/* TODO: Implement RelatedPetsList component */}
-              <div className={styles.relatedPetsPlaceholder}>
-                <p>Carregando pets relacionados...</p>
+        <div className={styles.container}>
+          {/* Left Column - Pet Info */}
+          <div className={styles.petInfo}>
+            {/* Header */}
+            <div className={styles.petHeader}>
+              <div>
+                <h1 className={styles.petName}>{pet.name}</h1>
+                <p className={styles.petBreed}>{pet.breed}</p>
               </div>
-            </Card.Body>
-          </Card>
+              <div className={styles.statusBadge}>
+                {pet.approval_status === 'APPROVED' ? '✓ Disponível' : 'Análise'}
+              </div>
+            </div>
+
+            {/* Quick Facts */}
+            <div className={styles.quickFacts}>
+              <div className={styles.factCard}>
+                <div className={styles.factLabel}>Idade</div>
+                <div className={styles.factValue}>
+                  {pet.age_value} {pet.age_value === 1 ? (pet.age_unit === 'years' ? 'ano' : 'mês') : (pet.age_unit === 'years' ? 'anos' : 'meses')}
+                </div>
+              </div>
+
+              <div className={styles.factCard}>
+                <div className={styles.factLabel}>Gênero</div>
+                <div className={styles.factValue}>{getGenderLabel()}</div>
+              </div>
+
+              <div className={styles.factCard}>
+                <div className={styles.factLabel}>Tamanho</div>
+                <div className={styles.factValue}>{getSizeLabel()}</div>
+              </div>
+
+              <div className={styles.factCard}>
+                <div className={styles.factLabel}>Cor</div>
+                <div className={styles.factValue}>{pet.color || 'Não especificada'}</div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Sobre {pet.name}</h2>
+              <p className={styles.description}>{pet.description}</p>
+            </div>
+
+            {/* Health Information */}
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>📋 Informações de Saúde</h2>
+              <div className={styles.healthInfo}>
+                <div className={styles.healthItem}>
+                  <div className={styles.healthLabel}>Vacinado</div>
+                  <div className={styles.healthValue}>
+                    {pet.is_vaccinated ? '✓ Sim' : '✗ Não'}
+                  </div>
+                </div>
+
+                <div className={styles.healthItem}>
+                  <div className={styles.healthLabel}>Castrado/Esterilizado</div>
+                  <div className={styles.healthValue}>
+                    {pet.is_neutered ? '✓ Sim' : '✗ Não'}
+                  </div>
+                </div>
+
+                <div className={styles.healthItem}>
+                  <div className={styles.healthLabel}>Cuidados Especiais</div>
+                  <div className={styles.healthValue}>
+                    {pet.needs_special_care ? 'Sim' : 'Não'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Personality & Compatibility */}
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>🎯 Personalidade & Compatibilidade</h2>
+              
+              <div className={styles.compatibilityGrid}>
+                <div className={styles.compatItem}>
+                  <div className={styles.compatLabel}>Crianças</div>
+                  <div className={styles.compatValue}>
+                    {pet.good_with_children === true ? '✓ Sim' : pet.good_with_children === false ? '✗ Não' : '? Desconhecido'}
+                  </div>
+                </div>
+
+                <div className={styles.compatItem}>
+                  <div className={styles.compatLabel}>Outros Animais</div>
+                  <div className={styles.compatValue}>
+                    {pet.good_with_pets === true ? '✓ Sim' : pet.good_with_pets === false ? '✗ Não' : '? Desconhecido'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Adoption Information */}
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>💝 Informações de Adoção</h2>
+              
+              <div className={styles.adoptionInfo}>
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>Tipo de Adoção:</span>
+                  <span className={styles.infoValue}>{pet.adoption_reason || 'Não especificado'}</span>
+                </div>
+
+                {pet.location && (
+                  <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>Localização:</span>
+                    <span className={styles.infoValue}>{pet.location}</span>
+                  </div>
+                )}
+
+                {pet.owner_name && (
+                  <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>Proprietário:</span>
+                    <span className={styles.infoValue}>{pet.owner_name}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Contact & Requirements */}
+          <div className={styles.sidebar}>
+            {/* Contact Card */}
+            {(pet.owner_email || pet.owner_phone) && (
+              <div className={styles.contactCard}>
+                <h3 className={styles.cardTitle}>Informações de Contato</h3>
+                
+                {pet.owner_phone && (
+                  <div className={styles.contactItem}>
+                    <div className={styles.contactLabel}>Telefone</div>
+                    <a href={`tel:${pet.owner_phone}`} className={styles.contactValue}>
+                      {pet.owner_phone}
+                    </a>
+                  </div>
+                )}
+
+                {pet.owner_email && (
+                  <div className={styles.contactItem}>
+                    <div className={styles.contactLabel}>Email</div>
+                    <a href={`mailto:${pet.owner_email}`} className={styles.contactValue}>
+                      {pet.owner_email}
+                    </a>
+                  </div>
+                )}
+
+                <button 
+                  className={styles.contactButton}
+                  onClick={() => setShowContactForm(!showContactForm)}
+                >
+                  Enviar Mensagem
+                </button>
+              </div>
+            )}
+
+            {/* Adoption Requirements */}
+            {pet.adoption_requirements && (
+              <div className={styles.requirementsCard}>
+                <h3 className={styles.cardTitle}>Requisitos para Adoção</h3>
+                <p className={styles.requirementsText}>{pet.adoption_requirements}</p>
+              </div>
+            )}
+
+            {/* Additional Requirements */}
+            <div className={styles.requirementsCard}>
+              <h3 className={styles.cardTitle}>Verificações Necessárias</h3>
+              <ul className={styles.requirementsList}>
+                <li>Documento de identidade</li>
+                <li>Comprovante de residência</li>
+                <li>Referências pessoais</li>
+                <li>Entrevista com o proprietário</li>
+              </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div className={styles.actionButtons}>
+              {pet.approval_status === 'APPROVED' && (
+                <button className={styles.primaryButton}>
+                  💚 Manifestar Interesse
+                </button>
+              )}
+              
+              <button className={styles.secondaryButton}>
+                ↗️ Compartilhar
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Back Button */}
+      <div className={styles.backButtonContainer}>
+        <Link href="/pets" className={styles.backButtonLink}>
+          ← Voltar para catálogo
+        </Link>
       </div>
     </div>
   );
