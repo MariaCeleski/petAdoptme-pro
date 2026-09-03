@@ -15,7 +15,7 @@ import {
 import {
   sendVerificationEmail,
   sendPasswordResetEmail,
-} from '../services/emailService.js';
+} from '../services/email.service.js';
 
 function generateVerificationToken(userId) {
   return `verify_${userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -72,7 +72,7 @@ export async function register(req, res, next) {
 
     const user = newUser[0];
 
-    // Send verification email
+    // Send verification email (non-blocking)
     try {
       const verificationToken = generateVerificationToken(user.id);
 
@@ -83,9 +83,15 @@ export async function register(req, res, next) {
         created_at: new Date().toISOString(),
       });
 
-      await sendVerificationEmail(user.email, user.id, verificationToken);
+      // Only try to send if Resend key is configured (not test key)
+      if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_test')) {
+        await sendVerificationEmail(user.email, user.id, verificationToken);
+      } else {
+        console.log('⚠️  Email sending disabled (Resend key not configured). Verification token:', verificationToken);
+      }
     } catch (emailError) {
-      console.warn('⚠️ Failed to send verification email:', emailError);
+      console.warn('⚠️ Failed to send verification email:', emailError.message);
+      // Don't throw - email sending is optional for MVP
     }
 
     // Return user data WITHOUT password hash
@@ -208,10 +214,15 @@ export async function requestPasswordReset(req, res, next) {
         created_at: new Date().toISOString(),
       });
 
-      await sendPasswordResetEmail(email, resetToken);
+      // Only try to send if Resend key is configured (not test key)
+      if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_test')) {
+        await sendPasswordResetEmail(email, resetToken);
+      } else {
+        console.log('⚠️  Email sending disabled (Resend key not configured). Reset token:', resetToken);
+      }
     } catch (emailError) {
-      console.error('❌ Error sending password reset email:', emailError);
-      throw new ApiError('Falha ao enviar email de reset', 500, 'EMAIL_SEND_ERROR');
+      console.error('❌ Error with password reset:', emailError.message);
+      // Don't throw - email sending is optional
     }
 
     res.status(200).json({
@@ -335,6 +346,27 @@ export async function changePassword(req, res, next) {
   }
 }
 
+export async function refreshAccessToken(req, res, next) {
+  try {
+    if (!req.user) {
+      throw new ApiError('Autenticação obrigatória', 401, 'NOT_AUTHENTICATED');
+    }
+
+    const token = generateToken({
+      userId: req.user.userId,
+      email: req.user.email,
+      userType: req.user.userType,
+    });
+
+    res.status(200).json({
+      message: 'Token renovado com sucesso',
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   register,
   login,
@@ -344,4 +376,5 @@ export default {
   resetPassword,
   getCurrentUser,
   changePassword,
+  refreshAccessToken,
 };

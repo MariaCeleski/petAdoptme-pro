@@ -10,6 +10,99 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'noreply@petadopt.com';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
 /**
+ * Send verification email
+ * @param {string} email - User email
+ * @param {string} userId - User ID
+ * @param {string} token - Verification token
+ */
+export async function sendVerificationEmail(email, userId, token) {
+  try {
+    const verificationLink = `${FRONTEND_URL}/auth/verify?token=${token}&userId=${userId}`;
+    
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: '✅ Confirme seu email no PetAdopt',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px;">
+          <h1>Bem-vindo ao PetAdopt! 🐾</h1>
+          
+          <p>Obrigado por se cadastrar! Para ativar sua conta, clique no botão abaixo:</p>
+          
+          <a href="${verificationLink}" 
+             style="display: inline-block; background: #007bff; color: white; padding: 12px 24px; 
+                    text-decoration: none; border-radius: 5px; margin: 20px 0;">
+            Confirmar Email
+          </a>
+          
+          <p style="font-size: 14px; color: #666;">
+            Ou copie este link: <br>
+            <code>${verificationLink}</code>
+          </p>
+          
+          <p style="font-size: 12px; color: #999; margin-top: 30px;">
+            Este link expira em 24 horas. Se você não solicitou este email, ignore-o.
+          </p>
+        </div>
+      `
+    });
+    
+    console.log(`✅ Verification email sent to ${email}`, response.id);
+    return response;
+    
+  } catch (error) {
+    console.error('❌ Failed to send verification email:', error);
+    throw error;
+  }
+}
+
+/**
+ * Send password reset email
+ * @param {string} email - User email
+ * @param {string} token - Reset token
+ */
+export async function sendPasswordResetEmail(email, token) {
+  try {
+    const resetLink = `${FRONTEND_URL}/auth/reset-password?token=${token}`;
+    
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: '🔐 Recuperar sua senha no PetAdopt',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px;">
+          <h1>Recuperar Senha</h1>
+          
+          <p>Recebemos uma solicitação para redefinir sua senha. Clique no botão abaixo para continuar:</p>
+          
+          <a href="${resetLink}" 
+             style="display: inline-block; background: #ff9800; color: white; padding: 12px 24px; 
+                    text-decoration: none; border-radius: 5px; margin: 20px 0;">
+            Redefinir Senha
+          </a>
+          
+          <p style="font-size: 14px; color: #666;">
+            Ou copie este link: <br>
+            <code>${resetLink}</code>
+          </p>
+          
+          <p style="font-size: 12px; color: #999; margin-top: 30px;">
+            Este link expira em 1 hora. Se você não solicitou esta alteração, ignore este email.
+          </p>
+        </div>
+      `
+    });
+    
+    console.log(`✅ Password reset email sent to ${email}`, response.id);
+    return response;
+    
+  } catch (error) {
+    console.error('❌ Failed to send password reset email:', error);
+    throw error;
+  }
+}
+
+/**
  * Send pet registration confirmation email
  * @param {Object} pet - Pet object
  * @param {Object} owner - Owner object with email
@@ -157,6 +250,8 @@ export async function sendRejectionEmail(pet, reason) {
 }
 
 export default {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
   sendPetRegistrationConfirmation,
   sendApprovalEmail,
   sendRejectionEmail,
