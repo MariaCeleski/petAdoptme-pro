@@ -103,15 +103,34 @@ export function validateEmail(email) {
 }
 
 /**
- * Checks if a string is a valid CUID.
+ * Checks if a string is a valid CUID or UUID.
+ * 
+ * Accepts both formats:
+ * - CUID: c + 24 lowercase alphanumeric characters (e.g., clv1h2k3m4n5p6q7r8s9t0u1v)
+ * - UUID: 8-4-4-4-12 hexadecimal format (e.g., b2f1e6ba-f0bd-48d8-9b30-ccddcab95c08)
  * 
  * Pure function with no async operations or external dependencies.
- * Used for client-side validation of CUID format.
+ * Used for client-side validation of ID format.
  * 
  * @param {string} id - ID to check
- * @returns {boolean} True if valid CUID format
+ * @returns {boolean} True if valid CUID or UUID format
  */
 export function isValidCUID(id) {
+  if (!id || typeof id !== 'string') {
+    return false;
+  }
+  
+  // CUID format: c + 24 lowercase alphanumeric characters
   const cuidRegex = /^c[a-z0-9]{24}$/;
-  return cuidRegex.test(id);
+  if (cuidRegex.test(id)) {
+    return true;
+  }
+  
+  // UUID format: 8-4-4-4-12 hexadecimal (with or without hyphens)
+  const uuidRegex = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
+  if (uuidRegex.test(id)) {
+    return true;
+  }
+  
+  return false;
 }
