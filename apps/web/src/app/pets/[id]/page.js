@@ -4,13 +4,15 @@ import { fetchPetById } from '@/lib/pets';
 
 /**
  * Pet Details Page - Server Component
- * Requirements: 5.1, 5.2, 5.3, 5.4
  */
 
 export async function generateMetadata({ params }) {
   try {
     const { id } = await params;
+    console.log('🔍 Fetching pet metadata for ID:', id);
+    
     const pet = await fetchPetById(id);
+    console.log('📊 Pet data fetched:', pet ? `Found ${pet.name}` : 'Not found');
     
     if (!pet) {
       return {
@@ -19,41 +21,16 @@ export async function generateMetadata({ params }) {
       };
     }
 
-    const title = `${pet.name} - ${pet.breed} ${pet.species === 'DOG' ? 'Cachorro' : 'Gato'} para Adoção`;
-    const description = `Conheça ${pet.name}, ${pet.breed} ${pet.gender === 'MALE' ? 'macho' : 'fêmea'}, ${pet.age} anos, ${pet.size.toLowerCase()} porte. ${pet.description.slice(0, 150)}...`;
+    const title = `${pet.name} para Adoção`;
+    const description = `Conheça ${pet.name}, ${pet.breed}.`;
 
     return {
       title,
       description,
-      keywords: [
-        'adoção de pets',
-        `${pet.species === 'DOG' ? 'cachorro' : 'gato'} para adoção`,
-        pet.breed,
-        pet.location,
-        `${pet.size.toLowerCase()} porte`,
-        pet.name
-      ].join(', '),
-      openGraph: {
-        title,
-        description,
-        type: 'website',
-        images: pet.images && pet.images.length > 0 ? [
-          {
-            url: pet.images[0],
-            width: 800,
-            height: 600,
-            alt: `Foto de ${pet.name}`
-          }
-        ] : ['/images/og-pet-default.jpg']
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        images: pet.images && pet.images.length > 0 ? [pet.images[0]] : ['/images/og-pet-default.jpg']
-      }
+      keywords: ['adoção de pets', pet.breed, pet.location].join(', '),
     };
   } catch (error) {
+    console.error('❌ Metadata error:', error);
     return {
       title: 'Pet não encontrado - PetAdopt',
       description: 'O pet que você está procurando não foi encontrado.'
@@ -64,25 +41,27 @@ export async function generateMetadata({ params }) {
 export default async function PetDetailPage({ params }) {
   try {
     const { id } = await params;
+    console.log('📄 Page.js - Loading pet with ID:', id);
     
     // Fetch pet data on the server
     const pet = await fetchPetById(id);
+    console.log('✅ Pet data loaded:', pet ? `${pet.name}` : 'No pet found');
     
     if (!pet) {
+      console.log('⚠️ Pet not found, showing not-found page');
       notFound();
     }
 
+    console.log('🎨 Rendering PetDetailsPage with pet:', pet.name);
     return <PetDetailsPage pet={pet} />;
     
   } catch (error) {
-    console.error('Error loading pet details:', error);
+    console.error('❌ Error loading pet details:', error);
     notFound();
   }
 }
 
 // Generate static params for popular pets (optional optimization)
 export async function generateStaticParams() {
-  // This could fetch popular pet IDs for static generation
-  // For now, we'll skip this to keep it simple
   return [];
 }

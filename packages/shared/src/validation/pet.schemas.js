@@ -5,8 +5,8 @@ import { nameSchema } from './common.schemas.js';
  * Pet validation schemas
  */
 
-export const speciesSchema = z.enum(['DOG', 'CAT']);
-export const sizeSchema = z.enum(['SMALL', 'MEDIUM', 'LARGE']);
+export const speciesSchema = z.enum(['DOG', 'CAT', 'RABBIT', 'OTHER']);
+export const sizeSchema = z.enum(['SMALL', 'MEDIUM', 'LARGE', 'XLARGE']);
 export const genderSchema = z.enum(['MALE', 'FEMALE']);
 export const petStatusSchema = z.enum(['AVAILABLE', 'PENDING', 'ADOPTED', 'UNAVAILABLE']);
 
@@ -29,7 +29,7 @@ export const createPetSchema = z.object({
   isNeutered: z.boolean().default(false),
   isVaccinated: z.boolean().default(false),
   healthStatus: z.string().max(300).optional(),
-  personality: z.array(z.string()).max(5, 'Máximo 5 traços de personalidade'),
+  personality: z.array(z.string()).max(5, 'Máximo 5 traços de personalidade').optional(),
 });
 
 // Update pet schema
@@ -50,4 +50,12 @@ export const petFiltersSchema = z.object({
 export const updatePetStatusSchema = z.object({
   status: petStatusSchema,
   reason: z.string().optional(),
+});
+
+// Pet compatibility schema
+export const petCompatibilitySchema = z.object({
+  pet_id: z.string(),
+  good_with_dogs: z.boolean().optional(),
+  good_with_cats: z.boolean().optional(),
+  good_with_children: z.boolean().optional(),
 });

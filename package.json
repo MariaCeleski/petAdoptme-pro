@@ -27,7 +27,11 @@
     "db:seed": "turbo run db:seed --filter=@petadopt/api"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "turbo": "^2.0.0",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
   }
 }

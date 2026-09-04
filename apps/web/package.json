@@ -10,26 +10,35 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write src/",
     "test": "echo \"No tests configured yet\"",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:chromium": "playwright test --project=chromium",
+    "test:e2e:firefox": "playwright test --project=firefox",
+    "test:e2e:webkit": "playwright test --project=webkit",
+    "test:e2e:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
+    "test:e2e:report": "playwright show-report",
     "clean": "rm -rf .next"
   },
   "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.7.0",
+    "@supabase/supabase-js": "^2.38.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.34.0",
     "next": "^16.3.2",
+    "next-auth": "^4.24.15",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "@supabase/supabase-js": "^2.38.0",
-    "@supabase/auth-helpers-nextjs": "^0.7.0",
-    "next-auth": "^4.24.15",
-    "zod": "^4.4.3",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.34.0"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "typescript": "^5.3.0",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "eslint": "^8.50.0",
     "eslint-config-next": "^16.3.2",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "typescript": "^5.3.0"
   }
 }

@@ -1,64 +1,107 @@
 /**
- * Authentication Controller
- * Handles user registration, login, and password management
+ * Authentication Controller - FASE 5.4 Email Integration
  */
 
 import { ApiError } from '../middleware/errorHandler.js';
-import { insert, select } from '../services/supabaseClient.js';
+import { insert, select, update } from '../services/supabaseClient.js';
+import { generateToken } from '../middleware/auth.js';
 import { userLoginSchema, userRegisterSchema, passwordResetSchema } from '@petadopt/shared';
+import {
+  hashPassword,
+  verifyPassword,
+  validatePasswordStrength,
+  validateEmail,
+} from '../services/authService.js';
+import {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+} from '../services/email.service.js';
 
-/**
- * POST /api/auth/register
- * Register a new user
- */
+function generateVerificationToken(userId) {
+  return `verify_${userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+}
+
 export async function register(req, res, next) {
   try {
-    const { email, password, name, userType } = await userRegisterSchema.parseAsync(req.body);
+    // Validate request body against schema
+    const { email, password, name, type } = await userRegisterSchema.parseAsync(req.body);
 
-    // Check if user already exists
-    const existingUser = await select('users', { email });
-    if (existingUser && existingUser.length > 0) {
-      throw new ApiError(
-        'Email already registered',
-        409,
-        'EMAIL_EXISTS'
-      );
+    // Validate email format
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      return res.status(400).json({
+        error: 'Email validation failed',
+        code: 'INVALID_EMAIL',
+        errors: emailValidation.errors,
+        timestamp: new Date().toISOString(),
+      });
     }
 
-    // In production, hash password with bcrypt
-    // const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedPassword = password; // Placeholder
+    // Validate password strength
+    const passwordValidation = validatePasswordStrength(password);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        error: 'Password validation failed',
+        code: 'INVALID_PASSWORD',
+        errors: passwordValidation.errors,
+        timestamp: new Date().toISOString(),
+      });
+    }
 
-    // Create user
+    // Check if email already exists
+    const existingUser = await select('users', { email });
+    if (existingUser && existingUser.length > 0) {
+      throw new ApiError('Email já registrado', 409, 'EMAIL_EXISTS');
+    }
+
+    // Hash password using backend utility
+    const hashedPassword = await hashPassword(password);
+
+    // Create user in database (let Supabase generate the ID)
     const newUser = await insert('users', {
       email,
       password: hashedPassword,
       name,
-      user_type: userType,
-      email_verified: false,
+      type,
       created_at: new Date().toISOString(),
     });
 
     if (!newUser || newUser.length === 0) {
-      throw new ApiError(
-        'Failed to create user',
-        500,
-        'USER_CREATION_FAILED'
-      );
+      throw new ApiError('Falha ao criar usuário', 500, 'USER_CREATION_FAILED');
     }
 
     const user = newUser[0];
 
-    // TODO: Send verification email
-    // await sendVerificationEmail(user.email, user.id);
+    // Send verification email (non-blocking)
+    try {
+      const verificationToken = generateVerificationToken(user.id);
 
+      await insert('email_verification_tokens', {
+        user_id: user.id,
+        token: verificationToken,
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        created_at: new Date().toISOString(),
+      });
+
+      // Only try to send if Resend key is configured (not test key)
+      if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_test')) {
+        await sendVerificationEmail(user.email, user.id, verificationToken);
+      } else {
+        console.log('⚠️  Email sending disabled (Resend key not configured). Verification token:', verificationToken);
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Failed to send verification email:', emailError.message);
+      // Don't throw - email sending is optional for MVP
+    }
+
+    // Return user data WITHOUT password hash
     res.status(201).json({
-      message: 'User created successfully',
+      message: 'Usuário criado com sucesso. Verifique seu email para ativar sua conta.',
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
-        userType: user.user_type,
+        userType: user.type,
       },
     });
   } catch (error) {
@@ -66,53 +109,37 @@ export async function register(req, res, next) {
   }
 }
 
-/**
- * POST /api/auth/login
- * Login user with email and password
- */
 export async function login(req, res, next) {
   try {
     const { email, password } = await userLoginSchema.parseAsync(req.body);
 
-    // Find user by email
     const users = await select('users', { email });
     if (!users || users.length === 0) {
-      throw new ApiError(
-        'Invalid email or password',
-        401,
-        'INVALID_CREDENTIALS'
-      );
+      throw new ApiError('Email ou senha inválida', 401, 'INVALID_CREDENTIALS');
     }
 
     const user = users[0];
-
-    // In production, use bcrypt to compare passwords
-    // const validPassword = await bcrypt.compare(password, user.password);
-    const validPassword = password === user.password; // Placeholder
+    const validPassword = await verifyPassword(password, user.password);
 
     if (!validPassword) {
-      throw new ApiError(
-        'Invalid email or password',
-        401,
-        'INVALID_CREDENTIALS'
-      );
+      throw new ApiError('Email ou senha inválida', 401, 'INVALID_CREDENTIALS');
     }
 
-    // TODO: Generate JWT token
-    // const token = jwt.sign({ userId: user.id, email: user.email, role: user.user_type }, process.env.JWT_SECRET, {
-    //   expiresIn: '24h',
-    // });
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      userType: user.type,
+    });
 
-    const token = 'mock-token'; // Placeholder
-
+    // Return user data WITHOUT password hash
     res.status(200).json({
-      message: 'Login successful',
+      message: 'Login realizado com sucesso',
       token,
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
-        userType: user.user_type,
+        userType: user.type,
       },
     });
   } catch (error) {
@@ -120,147 +147,234 @@ export async function login(req, res, next) {
   }
 }
 
-/**
- * POST /api/auth/logout
- * Logout user (typically just clears client-side token)
- */
 export async function logout(req, res, next) {
   try {
     res.status(200).json({
-      message: 'Logout successful',
+      message: 'Logout realizado com sucesso',
     });
   } catch (error) {
     next(error);
   }
 }
 
-/**
- * POST /api/auth/verify-email
- * Verify user email with token
- */
 export async function verifyEmail(req, res, next) {
   try {
-    const { token } = req.body;
+    const { token, userId } = req.body;
 
-    if (!token) {
-      throw new ApiError(
-        'Verification token required',
-        400,
-        'MISSING_TOKEN'
-      );
+    if (!token || !userId) {
+      throw new ApiError('Token e ID de usuário obrigatórios', 400, 'MISSING_PARAMS');
     }
 
-    // TODO: Verify token from database
-    // const verification = await select('verification_tokens', { token });
+    const verificationTokens = await select('email_verification_tokens', {
+      token,
+      user_id: userId,
+    });
+
+    if (!verificationTokens || verificationTokens.length === 0) {
+      throw new ApiError('Token de verificação inválido', 400, 'INVALID_TOKEN');
+    }
+
+    const tokenRecord = verificationTokens[0];
+
+    if (new Date(tokenRecord.expires_at) < new Date()) {
+      throw new ApiError('Token de verificação expirado', 400, 'EXPIRED_TOKEN');
+    }
+
+    await update('users', {
+      updated_at: new Date().toISOString(),
+    }, { id: userId });
 
     res.status(200).json({
-      message: 'Email verified successfully',
+      message: 'Email verificado com sucesso',
     });
   } catch (error) {
     next(error);
   }
 }
 
-/**
- * POST /api/auth/password-reset
- * Initiate password reset
- */
 export async function requestPasswordReset(req, res, next) {
   try {
     const { email } = req.body;
 
-    // Find user by email
     const users = await select('users', { email });
     if (!users || users.length === 0) {
-      // Don't reveal if email exists for security
       return res.status(200).json({
-        message: 'If an account exists, a reset link has been sent',
+        message: 'Se uma conta existe com este email, um link de reset foi enviado',
       });
     }
 
-    // TODO: Generate reset token and send email
-    // const resetToken = generateToken();
-    // await insert('password_reset_tokens', { user_id: users[0].id, token: resetToken });
-    // await sendPasswordResetEmail(email, resetToken);
+    const user = users[0];
+    const resetToken = `reset_${user.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    try {
+      await insert('password_reset_tokens', {
+        user_id: user.id,
+        token: resetToken,
+        expires_at: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
+        created_at: new Date().toISOString(),
+      });
+
+      // Only try to send if Resend key is configured (not test key)
+      if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_test')) {
+        await sendPasswordResetEmail(email, resetToken);
+      } else {
+        console.log('⚠️  Email sending disabled (Resend key not configured). Reset token:', resetToken);
+      }
+    } catch (emailError) {
+      console.error('❌ Error with password reset:', emailError.message);
+      // Don't throw - email sending is optional
+    }
 
     res.status(200).json({
-      message: 'If an account exists, a reset link has been sent',
+      message: 'Se uma conta existe com este email, um link de reset foi enviado',
     });
   } catch (error) {
     next(error);
   }
 }
 
-/**
- * POST /api/auth/password-reset/:token
- * Complete password reset
- */
 export async function resetPassword(req, res, next) {
   try {
     const { token } = req.params;
     const { newPassword } = await passwordResetSchema.parseAsync(req.body);
 
-    // TODO: Validate reset token
-    // const resetToken = await select('password_reset_tokens', { token });
-
     if (!token) {
-      throw new ApiError(
-        'Invalid or expired reset token',
-        400,
-        'INVALID_TOKEN'
-      );
+      throw new ApiError('Token de reset obrigatório', 400, 'MISSING_TOKEN');
     }
 
-    // TODO: Update user password
-    // const hashedPassword = await bcrypt.hash(newPassword, 10);
-    // await update('users', { password: hashedPassword }, { id: resetToken.user_id });
-    // await remove('password_reset_tokens', { token });
+    // Validate password strength before processing
+    const passwordValidation = validatePasswordStrength(newPassword);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        error: 'Password validation failed',
+        code: 'INVALID_PASSWORD',
+        errors: passwordValidation.errors,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    const resetTokens = await select('password_reset_tokens', { token });
+
+    if (!resetTokens || resetTokens.length === 0) {
+      throw new ApiError('Token de reset inválido', 400, 'INVALID_TOKEN');
+    }
+
+    const tokenRecord = resetTokens[0];
+
+    if (new Date(tokenRecord.expires_at) < new Date()) {
+      throw new ApiError('Token de reset expirado', 400, 'EXPIRED_TOKEN');
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await update('users', {
+      password: hashedPassword,
+      updated_at: new Date().toISOString(),
+    }, { id: tokenRecord.user_id });
 
     res.status(200).json({
-      message: 'Password reset successfully',
+      message: 'Senha resetada com sucesso',
     });
   } catch (error) {
     next(error);
   }
 }
 
-/**
- * GET /api/auth/me
- * Get current authenticated user
- */
 export async function getCurrentUser(req, res, next) {
   try {
     if (!req.user) {
-      throw new ApiError(
-        'Authentication required',
-        401,
-        'NOT_AUTHENTICATED'
-      );
+      throw new ApiError('Autenticação obrigatória', 401, 'NOT_AUTHENTICATED');
     }
 
-    // Fetch full user data from database
     const users = await select('users', { id: req.user.userId });
     if (!users || users.length === 0) {
-      throw new ApiError(
-        'User not found',
-        404,
-        'USER_NOT_FOUND'
-      );
+      throw new ApiError('Usuário não encontrado', 404, 'USER_NOT_FOUND');
     }
 
     const user = users[0];
 
+    // Return user data WITHOUT password hash
     res.status(200).json({
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
-        userType: user.user_type,
-        emailVerified: user.email_verified,
-        createdAt: user.created_at,
+        userType: user.type,
       },
     });
   } catch (error) {
     next(error);
   }
 }
+
+export async function changePassword(req, res, next) {
+  try {
+    if (!req.user) {
+      throw new ApiError('Autenticação obrigatória', 401, 'NOT_AUTHENTICATED');
+    }
+
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      throw new ApiError('Senha antiga e nova obrigatórias', 400, 'MISSING_PASSWORDS');
+    }
+
+    const users = await select('users', { id: req.user.userId });
+    if (!users || users.length === 0) {
+      throw new ApiError('Usuário não encontrado', 404, 'USER_NOT_FOUND');
+    }
+
+    const user = users[0];
+
+    const validOldPassword = await verifyPassword(oldPassword, user.password);
+    if (!validOldPassword) {
+      throw new ApiError('Senha antiga incorreta', 401, 'INVALID_OLD_PASSWORD');
+    }
+
+    const hashedNewPassword = await hashPassword(newPassword);
+
+    await update('users', {
+      password: hashedNewPassword,
+      updated_at: new Date().toISOString(),
+    }, { id: user.id });
+
+    res.status(200).json({
+      message: 'Senha alterada com sucesso',
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function refreshAccessToken(req, res, next) {
+  try {
+    if (!req.user) {
+      throw new ApiError('Autenticação obrigatória', 401, 'NOT_AUTHENTICATED');
+    }
+
+    const token = generateToken({
+      userId: req.user.userId,
+      email: req.user.email,
+      userType: req.user.userType,
+    });
+
+    res.status(200).json({
+      message: 'Token renovado com sucesso',
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export default {
+  register,
+  login,
+  logout,
+  verifyEmail,
+  requestPasswordReset,
+  resetPassword,
+  getCurrentUser,
+  changePassword,
+  refreshAccessToken,
+};

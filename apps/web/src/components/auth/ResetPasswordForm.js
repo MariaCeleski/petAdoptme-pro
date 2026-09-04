@@ -30,7 +30,9 @@ export default function ResetPasswordForm({ token, email }) {
       }
 
       try {
-        const response = await fetch(`/api/auth/reset-password?token=${token}&email=${encodeURIComponent(email)}`);
+        // Validar token contra backend
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${backendUrl}/api/auth/reset-password?token=${token}&email=${encodeURIComponent(email)}`);
         const result = await response.json();
 
         if (!response.ok) {
@@ -96,7 +98,9 @@ export default function ResetPasswordForm({ token, email }) {
     setErrors({});
 
     try {
-      const response = await fetch('/api/auth/reset-password', {
+      // Chamar backend API diretamente para reset de senha
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${backendUrl}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

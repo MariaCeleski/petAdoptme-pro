@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "main": "./src/index.js",
   "exports": {
+    ".": "./src/index.js",
     "./types": "./src/types/index.js",
     "./validation": "./src/validation/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "echo 'No build needed for JS package'",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },

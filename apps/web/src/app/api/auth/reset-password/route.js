@@ -1,130 +1,64 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { hashPassword, validatePasswordStrength, validateEmail } from '@/lib/auth-utils';
 
+/**
+ * Frontend proxy for password reset.
+ * Forwards requests to the backend API.
+ * All password hashing and validation is handled by the backend.
+ */
 export async function POST(request) {
   try {
-    const { token, email, password } = await request.json();
+    const body = await request.json();
 
-    // Validar dados de entrada
-    if (!token || !email || !password) {
-      return NextResponse.json(
-        { error: 'Todos os campos são obrigatórios', code: 'VALIDATION_ERROR' },
-        { status: 400 }
-      );
-    }
-
-    // Validar email
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.isValid) {
-      return NextResponse.json(
-        { error: emailValidation.errors[0], code: 'VALIDATION_ERROR' },
-        { status: 400 }
-      );
-    }
-
-    // Validar senha
-    const passwordValidation = validatePasswordStrength(password);
-    if (!passwordValidation.isValid) {
-      return NextResponse.json(
-        { error: passwordValidation.errors[0], code: 'VALIDATION_ERROR' },
-        { status: 400 }
-      );
-    }
-
-    // Verificar token
-    const user = await prisma.user.findFirst({
-      where: {
-        email: email.toLowerCase().trim(),
-        resetToken: token,
-        resetTokenExpiry: {
-          gt: new Date() // Token não expirado
-        }
-      }
+    // Forward request to backend API
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    
+    const response = await fetch(`${backendUrl}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Token inválido ou expirado', code: 'INVALID_TOKEN' },
-        { status: 400 }
-      );
-    }
+    const data = await response.json();
 
-    // Hash da nova senha
-    const hashedPassword = await hashPassword(password);
-
-    // Atualizar senha e limpar tokens de reset
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        password: hashedPassword,
-        resetToken: null,
-        resetTokenExpiry: null,
-        // Se o email ainda não foi verificado e está fazendo reset, marcar como verificado
-        emailVerified: user.emailVerified || new Date(),
-      }
-    });
-
-    return NextResponse.json({
-      message: 'Senha redefinida com sucesso! Você pode fazer login agora.'
-    });
+    return NextResponse.json(data, { status: response.status });
 
   } catch (error) {
-    console.error('Reset password error:', error);
+    console.error('Reset password proxy error:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor', code: 'INTERNAL_ERROR' },
+      { error: 'Erro ao comunicar com o servidor', code: 'INTERNAL_ERROR' },
       { status: 500 }
     );
   }
 }
 
+/**
+ * Frontend proxy for validating password reset token.
+ * Forwards token validation requests to the backend API.
+ */
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const token = searchParams.get('token');
     const email = searchParams.get('email');
 
-    // Validar parâmetros
-    if (!token || !email) {
-      return NextResponse.json(
-        { error: 'Token e email são obrigatórios', code: 'VALIDATION_ERROR' },
-        { status: 400 }
-      );
-    }
+    // Forward request to backend API
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    
+    const response = await fetch(
+      `${backendUrl}/api/auth/reset-password?token=${token}&email=${encodeURIComponent(email)}`,
+      { method: 'GET' }
+    );
 
-    // Verificar se token é válido
-    const user = await prisma.user.findFirst({
-      where: {
-        email: email.toLowerCase().trim(),
-        resetToken: token,
-        resetTokenExpiry: {
-          gt: new Date()
-        }
-      },
-      select: {
-        id: true,
-        email: true,
-        resetTokenExpiry: true
-      }
-    });
+    const data = await response.json();
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Token inválido ou expirado', code: 'INVALID_TOKEN' },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json({
-      valid: true,
-      email: user.email,
-      expiresAt: user.resetTokenExpiry
-    });
+    return NextResponse.json(data, { status: response.status });
 
   } catch (error) {
-    console.error('Validate reset token error:', error);
+    console.error('Validate reset token proxy error:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor', code: 'INTERNAL_ERROR' },
+      { error: 'Erro ao comunicar com o servidor', code: 'INTERNAL_ERROR' },
       { status: 500 }
     );
   }

@@ -5,9 +5,26 @@
 
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import WebSocket from 'ws';
+import fetch from 'node-fetch';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+// Load environment variables from .env.local or .env (try .env.local first)
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envPathLocal = path.join(__dirname, '../../.env.local');
+const envPathDefault = path.join(__dirname, '../../.env');
+dotenv.config({ path: envPathLocal });
+dotenv.config({ path: envPathDefault });
 
+// Setup WebSocket and fetch polyfills for Node.js
+if (typeof global !== 'undefined') {
+  global.WebSocket = WebSocket;
+  global.fetch = fetch;
+}
+
+// Use SUPABASE_ANON_KEY (public/anonymous key) for client operations
+// SUPABASE_KEY (service role key) should only be used on backend for admin operations
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
 
@@ -22,13 +39,45 @@ let supabaseClient = null;
 
 export function getSupabaseClient() {
   if (!supabaseClient && SUPABASE_URL && SUPABASE_KEY) {
-    supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: {
-        persistSession: false,
-      },
-    });
+    try {
+      supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: {
+          persistSession: false,
+        },
+        realtime: {
+          params: {
+            eventsPerSecond: 10,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Failed to initialize Supabase client:', error.message);
+      return null;
+    }
   }
   return supabaseClient;
+}
+
+/**
+ * Build Supabase query with filters
+ */
+function buildQuery(baseQuery, filter) {
+  let query = baseQuery;
+  
+  if (filter && typeof filter === 'object') {
+    for (const [key, value] of Object.entries(filter)) {
+      if (value === null || value === undefined) {
+        query = query.is(key, null);
+      } else if (Array.isArray(value)) {
+        query = query.in(key, value);
+      } else {
+        // For exact match
+        query = query.eq(key, value);
+      }
+    }
+  }
+  
+  return query;
 }
 
 /**
@@ -37,41 +86,41 @@ export function getSupabaseClient() {
  */
 export async function query(table, operation = 'select', data = null, filter = null) {
   const client = getSupabaseClient();
-  
+
   if (!client) {
     throw new Error('Supabase client not initialized');
   }
 
   try {
-    let query = client.from(table)[operation];
-
-    // Apply data for insert/update operations
-    if (data && (operation === 'insert' || operation === 'update')) {
-      query = query(data);
+    let baseQuery = client.from(table);
+    
+    if (operation === 'select') {
+      baseQuery = buildQuery(baseQuery.select('*'), filter);
+    } else if (operation === 'insert') {
+      // IMPORTANTE: Adicionar .select() para retornar os dados inseridos
+      baseQuery = baseQuery.insert(data).select();
+    } else if (operation === 'update') {
+      baseQuery = buildQuery(baseQuery, filter).update(data).select();
+    } else if (operation === 'delete') {
+      baseQuery = buildQuery(baseQuery, filter).delete();
     }
 
-    // Apply filters
-    if (filter) {
-      for (const [key, value] of Object.entries(filter)) {
-        if (value === null) {
-          query = query.is(key, null);
-        } else if (Array.isArray(value)) {
-          query = query.in(key, value);
-        } else {
-          query = query.eq(key, value);
-        }
-      }
+    const result = await baseQuery;
+    
+    if (result.error) {
+      console.error(`❌ Database ${operation} error on ${table}:`, {
+        message: result.error.message,
+        code: result.error.code,
+        hint: result.error.hint,
+        details: result.error.details,
+        status: result.status,
+      });
+      throw result.error;
     }
 
-    const { data: result, error } = await query;
-
-    if (error) {
-      throw error;
-    }
-
-    return result;
+    return result.data;
   } catch (error) {
-    console.error(`Database ${operation} failed on ${table}:`, error);
+    console.error(`❌ Database ${operation} failed on ${table}:`, error.message);
     throw error;
   }
 }
@@ -80,7 +129,10 @@ export async function query(table, operation = 'select', data = null, filter = n
  * Insert helper
  */
 export async function insert(table, data) {
-  return query(table, 'insert', data);
+  console.log(`🔧 Inserting into ${table}:`, data);
+  const result = await query(table, 'insert', data);
+  console.log(`✅ Insert result:`, result);
+  return result;
 }
 
 /**
@@ -109,7 +161,7 @@ export async function remove(table, filter) {
  */
 export async function count(table, filter = null) {
   const client = getSupabaseClient();
-  
+
   if (!client) {
     throw new Error('Supabase client not initialized');
   }
@@ -117,9 +169,9 @@ export async function count(table, filter = null) {
   try {
     let query = client.from(table).select('*', { count: 'exact', head: true });
 
-    if (filter) {
+    if (filter && typeof filter === 'object') {
       for (const [key, value] of Object.entries(filter)) {
-        if (value === null) {
+        if (value === null || value === undefined) {
           query = query.is(key, null);
         } else if (Array.isArray(value)) {
           query = query.in(key, value);
@@ -129,15 +181,15 @@ export async function count(table, filter = null) {
       }
     }
 
-    const { count: result, error } = await query;
+    const result = await query;
 
-    if (error) {
-      throw error;
+    if (result.error) {
+      throw result.error;
     }
 
-    return result;
+    return result.count;
   } catch (error) {
-    console.error(`Count failed on ${table}:`, error);
+    console.error(`Count failed on ${table}:`, error.message);
     throw error;
   }
 }

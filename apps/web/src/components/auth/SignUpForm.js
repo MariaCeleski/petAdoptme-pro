@@ -94,8 +94,9 @@ export default function SignUpForm() {
     setErrors({});
 
     try {
-      // Chamar API de registro
-      const response = await fetch('/api/auth/register', {
+      // Chamar backend API diretamente para registro
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${backendUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -111,10 +112,29 @@ export default function SignUpForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        if (result.code === 'USER_EXISTS') {
+        if (result.code === 'USER_EXISTS' || result.code === 'EMAIL_EXISTS') {
           setErrors({ email: 'Este email já está cadastrado' });
         } else if (result.code === 'VALIDATION_ERROR') {
-          setErrors({ general: result.error });
+          // Se temos detalhes de validação, mostrar o primeiro erro
+          if (result.details && result.details.length > 0) {
+            const firstError = result.details[0];
+            setErrors({ general: firstError.message });
+          } else {
+            setErrors({ general: result.error });
+          }
+        } else if (result.code === 'INVALID_PASSWORD') {
+          // Mostrar os erros de validação de senha
+          if (result.errors && result.errors.length > 0) {
+            setErrors({ password: result.errors[0] });
+          } else {
+            setErrors({ general: result.error });
+          }
+        } else if (result.code === 'INVALID_EMAIL') {
+          if (result.errors && result.errors.length > 0) {
+            setErrors({ email: result.errors[0] });
+          } else {
+            setErrors({ general: result.error });
+          }
         } else {
           setErrors({ general: result.error || 'Erro ao criar conta' });
         }

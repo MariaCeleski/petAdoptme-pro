@@ -1,60 +1,87 @@
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
+/**
+ * Supabase Client (Frontend)
+ * 
+ * Note: Prisma is a backend-only ORM. The frontend uses Supabase client directly.
+ * This file provides a proxy interface to Supabase for gradual migration.
+ * 
+ * ALL database operations should go through:
+ * - Backend API routes (preferred)
+ * - Or Supabase client directly
+ */
 
-const globalForPrisma = globalThis;
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('Supabase credentials not configured');
+}
+
+// Create Supabase client
+export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
 
 /**
- * Inicializa Prisma Client com PostgreSQL via adapter
+ * Mock Prisma client that redirects to backend API
+ * This is a compatibility layer for the existing codebase
  */
-function createPrismaClient() {
-  const connectionString = process.env.DATABASE_URL;
-  
-  if (!connectionString) {
-    throw new Error('DATABASE_URL environment variable is not set');
-  }
+export const prisma = {
+  // User operations
+  user: {
+    findUnique: async (query) => {
+      const res = await fetch('/api/users/profile', {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      return res.ok ? res.json() : null;
+    },
+  },
 
-  const adapter = new PrismaPg({ 
-    connectionString
-  });
+  // Pet operations
+  pet: {
+    findMany: async (query) => {
+      const res = await fetch('/api/pets');
+      return res.ok ? res.json() : [];
+    },
+    findUnique: async (query) => {
+      const { where } = query;
+      const res = await fetch(`/api/pets/${where.id}`);
+      return res.ok ? res.json() : null;
+    },
+    create: async (data) => {
+      const res = await fetch('/api/pets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      return res.ok ? res.json() : null;
+    },
+  },
 
-  return new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === 'development' 
-      ? [] // Don't log in development to reduce overhead
-      : ['error'],
-    errorFormat: 'pretty',
-  });
-}
+  // Adoption operations
+  adoption: {
+    findMany: async (query) => {
+      const res = await fetch('/api/adoptions');
+      return res.ok ? res.json() : [];
+    },
+    findUnique: async (query) => {
+      const { where } = query;
+      const res = await fetch(`/api/adoptions/${where.id}`);
+      return res.ok ? res.json() : null;
+    },
+  },
 
-export const prisma = globalForPrisma.prisma || (() => {
-  try {
-    return createPrismaClient();
-  } catch (error) {
-    console.error('[Prisma] Failed to initialize client:', error.message);
-    throw error;
-  }
-})();
+  // Shelter operations
+  shelter: {
+    findMany: async (query) => {
+      const res = await fetch('/api/shelters');
+      return res.ok ? res.json() : [];
+    },
+    findUnique: async (query) => {
+      const { where } = query;
+      const res = await fetch(`/api/shelters/${where.id}`);
+      return res.ok ? res.json() : null;
+    },
+  },
+};
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
-
-/**
- * Handlers de shutdown gracioso (apenas em produção)
- */
-if (process.env.NODE_ENV === 'production') {
-  async function handleShutdown(signal) {
-    console.log(`[Prisma] Recebido sinal ${signal}, encerrando conexões...`);
-    try {
-      await prisma.$disconnect();
-      console.log('[Prisma] Desconexão concluída com sucesso');
-      process.exit(0);
-    } catch (error) {
-      console.error('[Prisma] Erro ao desconectar:', error);
-      process.exit(1);
-    }
-  }
-
-  process.on('SIGINT', () => handleShutdown('SIGINT'));
-  process.on('SIGTERM', () => handleShutdown('SIGTERM'));
-}
+export default prisma;

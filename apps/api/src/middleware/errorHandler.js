@@ -7,10 +7,11 @@
  * Custom API Error class
  */
 export class ApiError extends Error {
-  constructor(message, statusCode = 500, code = 'INTERNAL_ERROR') {
+  constructor(message, statusCode = 500, code = 'INTERNAL_ERROR', details = null) {
     super(message);
     this.statusCode = statusCode;
     this.code = code;
+    this.details = details;
     this.timestamp = new Date().toISOString();
   }
 }
@@ -26,28 +27,51 @@ export function errorHandler(err, req, res, next) {
     statusCode: err.statusCode,
     path: req.path,
     method: req.method,
+    details: err.details,
   });
 
   // Validation errors from Zod
-  if (err.name === 'ZodError') {
+  if (err.name === 'ZodError' || (err.message && err.message.startsWith('['))) {
+    let errors = [];
+    try {
+      // If err.errors is an array, use it directly
+      if (Array.isArray(err.errors)) {
+        errors = err.errors.map(e => ({
+          field: Array.isArray(e.path) ? e.path.join('.') : e.path,
+          message: e.message,
+        }));
+      } else if (typeof err.message === 'string' && err.message.startsWith('[')) {
+        // If it's a JSON string, parse it
+        errors = JSON.parse(err.message).map(e => ({
+          field: Array.isArray(e.path) ? e.path.join('.') : e.path,
+          message: e.message,
+        }));
+      }
+    } catch (parseErr) {
+      console.error('Error parsing validation errors:', parseErr);
+      errors = [{ field: 'unknown', message: 'Validation error' }];
+    }
     return res.status(400).json({
       error: 'Validation Error',
       code: 'VALIDATION_ERROR',
-      details: err.errors.map(e => ({
-        field: e.path.join('.'),
-        message: e.message,
-      })),
+      details: errors,
       timestamp: new Date().toISOString(),
     });
   }
 
   // Custom API errors
   if (err instanceof ApiError) {
-    return res.status(err.statusCode).json({
+    const response = {
       error: err.message,
       code: err.code,
       timestamp: err.timestamp,
-    });
+    };
+    
+    if (err.details) {
+      response.details = err.details;
+    }
+    
+    return res.status(err.statusCode).json(response);
   }
 
   // Supabase errors

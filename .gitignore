@@ -34,3 +34,63 @@ turbo.log
 # OS
 Thumbs.db
 .DS_Store
+
+# Testing Reports
+playwright-report/
+test-results/
+.playwright/
+
+
+# ============================================================
+# Security - Sensitive Data Protection
+# ============================================================
+
+# Environment files with secrets
+.env*
+!.env.example
+!.env.*.example
+
+# API Keys and Credentials
+*.key
+*.pem
+**/secrets/
+**/credentials/
+
+# Cloudinary uploads (local cache)
+.cloudinary/
+
+# Database backups and dumps
+*.sql.backup
+*.sql.gz
+*.dump
+
+# Private SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# AWS credentials
+.aws/credentials
+.aws/config
+
+# NPM tokens
+.npmrc
+~/.npmrc
+
+# IDE secrets
+.vscode/settings.json
+.idea/workspace.xml
+
+# Build artifacts with embedded secrets
+dist/**/*.map
+build/**/*.map
+
+# Testing files with real data
+e2e/**/*.secret.js
+**/*.test-credentials.js
+
+# Docker secrets
+.env.docker
+docker-compose.override.yml
+
